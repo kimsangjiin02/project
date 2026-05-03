@@ -502,17 +502,12 @@ useEffect(() => {
   const nc = dialogCount + 1;
   setDialogCount(nc);
 
-  if (isBoss) {
-  // 백엔드 응답에서 심기변화 꺼내기
-  // 폭군 프롬프트는 hpChange 또는 심기변화로 올 수 있음
-  const 심기변화 = data.stats?.폭군심기변화 
-               || data.stats?.심기변화 
-               || data.심기변화 
-               || 0;
-  
-  const newHp = Math.max(0, Math.min(30, bossHp + 심기변화));
-  setBossHp(newHp);
-  setBossDelta(심기변화);
+if (isBoss) {
+    const 심기변화 = data.stats?.폭군심기변화 || 0;
+    console.log("심기변화:", 심기변화, "현재bossHp:", bossHp);  // ← 추가
+    const newHp = Math.max(0, Math.min(30, bossHp + 심기변화));
+    setBossHp(newHp);
+    setBossDelta(심기변화);
   setLoading(false);
   if (newHp <= 0) { onDialogComplete("bossKill"); return; }
   if (nc >= maxDialog) { onDialogComplete("bossSurvive"); return; }
@@ -525,29 +520,33 @@ useEffect(() => {
 }
 
   // 백엔드 연동 ────────────────────────────
- async function sendMessage(text) {
+async function sendMessage(text) {
   if (!text.trim() || loading) return;
   setLoading(true);
   setMessages(m => [...m, { role:"user", text }]);
   setInput("");
 
-  // 백엔드 호출
   const data = await callBackend(text);
-
-  // 백엔드 응답 처리
   setMessages(m => [...m, { role:"npc", text: data.대사 }]);
-  setRecAnswers(data.추천답변 || []);
+  if (Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
 
-  // 스탯 업데이트
-  onStatsChange({ affection: data.stats.호감도변화 });
+  const nc = dialogCount + 1;
+  setDialogCount(nc);
 
-  // 베드엔딩 체크
-  if (data.bad_ending) { onDialogComplete("badAffection"); return; }
-
-  // 주차 전환 체크
-  if (data.week_advanced) { onDialogComplete("complete"); return; }
-
-  setLoading(false);
+  if (isBoss) {
+    const 심기변화 = data.stats?.폭군심기변화 || 0;
+    const newHp = Math.max(0, Math.min(30, bossHp + 심기변화));
+    setBossHp(newHp);
+    setBossDelta(심기변화);
+    setLoading(false);
+    if (newHp <= 0) { onDialogComplete("bossKill"); return; }
+    if (nc >= maxDialog) { onDialogComplete("bossSurvive"); return; }
+  } else {
+    onStatsChange({ affection: data.stats?.호감도변화 || 0 });
+    setLoading(false);
+    if (data.bad_ending === "호감도_0_엔딩") { onDialogComplete("badAffection"); return; }
+    if (nc >= maxDialog) { onDialogComplete("complete"); return; }
+  }
 }
 
   const npcName = isBoss ? "태황대군" : "희종";

@@ -616,11 +616,19 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
     setLoading(false);
 
     // ★ 백엔드가 이미지 URL을 주면 바로 적용
-    // 백엔드 응답에 "이미지URL" 또는 "image_url" 필드가 있으면 사용
+    // 백엔드 응답에서 가능한 모든 이미지 URL 필드 탐색
     if(!isBoss) {
-      const imgUrl = data.이미지URL || data.image_url || null;
-      if(imgUrl) setCurrentCharImg(imgUrl);
-      else {
+      const imgUrl = data.이미지URL
+        || data.image_url
+        || data.imageUrl
+        || data.character_image
+        || data.캐릭터이미지
+        || null;
+      if(imgUrl) {
+        // 상대경로면 백엔드 주소 붙이기
+        const fullUrl = imgUrl.startsWith("http") ? imgUrl : `http://localhost:8000${imgUrl}`;
+        setCurrentCharImg(fullUrl);
+      } else {
         // 백엔드 URL 없으면 호감도 기반 이미지로 fallback
         setCurrentCharImg(null);
       }
@@ -636,7 +644,11 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
       const affDelta = data.stats?.호감도변화||0;
       setAffDelta(affDelta);
       onStatsChange({affection:affDelta});
-      if(data.bad_ending){ setTimeout(()=>onDialogComplete("badAffection"),1500); return;}
+      // ★ 베드엔딩: 백엔드 bad_ending 무시하고 호감도 수치로만 판단
+      // 호감도가 -20 이하로 내려갔을 때만 베드엔딩 (한두 번 실수는 괜찮음)
+      // stats.affection은 아직 업데이트 전이라 delta 더해서 계산
+      const newAff = stats.affection + affDelta;
+      if(newAff <= -20){ setTimeout(()=>onDialogComplete("badAffection"),1500); return;}
       if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("complete"),1500); return;}
     }
   }
@@ -1138,6 +1150,8 @@ export default function HeejongGame() {
 
   function updateStats(delta){
     setStats(s=>({
+      // 호감도 최솟값 -20 (한두 번 실수로 바로 베드엔딩 안 됨)
+      // 베드엔딩은 -20 이하일 때만 발생
       affection:Math.max(-20,Math.min(100,s.affection+(delta.affection||0))),
       soldiers:s.soldiers+(delta.soldiers||0),
       minsim:Math.max(0,s.minsim+(delta.minsim||0)),

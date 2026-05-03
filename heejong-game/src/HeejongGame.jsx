@@ -58,24 +58,25 @@ const FACTION_HINTS = {
 // src/assets/ 폴더에 파일 넣고 경로 수정
 // ============================================================
 const IMAGES = {
-  prologue: "/assets/images/prologue.png",
-  phoenix: "/assets/images/phoenix.png",
-  statAffection: "/assets/images/stat_affection.png",
-  statSoldier: "/assets/images/stat_soldier.png",
-  statMinsim: "/assets/images/stat_minsim.png",
-  weekBg: "/assets/images/week_bg.png",
-  heejongLow: "/assets/images/heejong_low.png",
-  heejongMid: "/assets/images/heejong_mid.png",
-  heejongHigh: "/assets/images/heejong_high.png",
-  tyrant: "/assets/images/tyrant.png",
-  miniBg: "/assets/images/mini_board.png",
-  miniBgSoldier: "/assets/images/mini_soldier.png",
-  scrollBg: "/assets/images/scroll.png",
-  bossLeftBg: "/assets/images/boss_left.png",
-  endingSuccess: "/assets/images/ending_success.png",
-  endingFail: "/assets/images/ending_fail.png",
-  endingDeath: "/assets/images/ending_death.png",
-  endingEvil: "/assets/images/ending_evil.png",
+  prologue:       "/assets/images/prologue.png",
+  playerAvatar:   null,
+  phoenix:        "/assets/images/phoenix.png",
+  statAffection:  "/assets/images/stat_affection.png",
+  statSoldier:    "/assets/images/stat_soldier.png",
+  statMinsim:     "/assets/images/stat_minsim.png",
+  weekBg:         "/assets/images/week_bg.png",
+  heejongLow:     "/assets/images/heejong_low.png",
+  heejongMid:     "/assets/images/heejong_mid.png",
+  heejongHigh:    "/assets/images/heejong_high.png",
+  tyrant:         "/assets/images/tyrant.png",
+  miniBg:         "/assets/images/mini_board.png",
+  miniBgSoldier:  "/assets/images/mini_soldier.png",
+  scrollBg:       "/assets/images/scroll.png",
+  bossLeftBg:     "/assets/images/boss_left.png",
+  endingSuccess:  "/assets/images/ending_success.png",
+  endingFail:     "/assets/images/ending_fail.png",
+  endingDeath:    "/assets/images/ending_death.png",
+  endingEvil:     "/assets/images/ending_evil.png",
 };
 
 // 호감도에 따라 희종 이미지 선택
@@ -378,7 +379,22 @@ async function callBackend(message) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message })
   });
-  return await r.json();
+  const data = await r.json();
+
+  // 대사 필드 정리: JSON이 대사 안에 섞여 있으면 제거
+  if(data.대사) {
+    let 대사 = data.대사;
+    // 대사 안에 JSON 패턴이 있으면 앞부분만 사용
+    const braceIdx = 대사.indexOf('{"');
+    if(braceIdx > 0) {
+      대사 = 대사.slice(0, braceIdx).trim();
+    }
+    // 따옴표로 끝나는 패턴 제거
+    대사 = 대사.replace(/",\s*$/, '').replace(/"\s*$/, '').trim();
+    data.대사 = 대사;
+  }
+
+  return data;
 }
 
 // ============================================================
@@ -581,8 +597,20 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
   const hpPct = (bossHp/30)*100;
 
   async function handleBackendResponse(data, nc) {
-    // NPC 대사 표시
-    setMessages(m=>[...m,{role:"npc",text:data.대사}]);
+    // 대사만 추출 (JSON 형식이 그대로 노출되지 않도록)
+    let 대사 = data.대사 || "";
+    // 혹시 대사 안에 JSON 형식이 포함된 경우 제거
+    if(대사.includes('{"') || 대사.includes('"호감도변화"')) {
+      try {
+        const parsed = JSON.parse(대사);
+        대사 = parsed.대사 || 대사;
+      } catch {
+        // 파싱 실패면 중괄호 이전까지만 사용
+        const braceIdx = 대사.indexOf('{');
+        if(braceIdx > 0) 대사 = 대사.slice(0, braceIdx).trim();
+      }
+    }
+    setMessages(m=>[...m,{role:"npc",text:대사}]);
     if(Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
     setDialogCount(nc);
     setLoading(false);
@@ -624,24 +652,79 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
     } catch { setLoading(false); }
   }
 
+  // 추천 답변: 백엔드 호출하되 호감도 변화는 프론트에서 강제 고정
+  // 백엔드 응답의 호감도변화 값은 무시하고 +3 고정 적용
+  const NPC_REC_REPLIES = [
+    "...그렇군요. 오랜만이오.",
+    "수고가 많으십니다, 숙부님.",
+    "...고맙소. 그런 말을 들으니 조금 마음이 편해지는 것 같소.",
+    "흠... 그런 생각을 해주시다니.",
+    "...잘 오셨소. 사실 이야기 나눌 사람이 필요했소.",
+    "그리 말씀해 주시니... 감사하오.",
+  ];
+  const BOSS_REC_REPLIES = [
+    "...그래. 그 정도면 봐주지.",
+    "흠, 말이라도 그렇게 해야지.",
+    "...알겠다. 물러가거라.",
+  ];
+
   async function sendRecommended(text) {
     if(loading||recLoading) return;
     setLoading(true);
     setMessages(m=>[...m,{role:"user",text}]);
+
+    // 백엔드 호출 시도 (대사와 추천답변 갱신 목적)
+    // 단, 호감도/심기 변화는 프론트에서 고정값 사용
     try {
       const data = await callBackend(text);
-      // 추천 답변은 호감도가 절대 깎이지 않음 — 최소 +3 보장
-      if(!isBoss && data.stats) {
-        const raw = data.stats.호감도변화 || 0;
-        data.stats.호감도변화 = raw < 3 ? 3 : raw;
+      const npcText = data.대사 || (isBoss
+        ? BOSS_REC_REPLIES[Math.floor(Math.random()*BOSS_REC_REPLIES.length)]
+        : NPC_REC_REPLIES[Math.floor(Math.random()*NPC_REC_REPLIES.length)]);
+
+      setMessages(m=>[...m,{role:"npc",text:npcText}]);
+      if(Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
+
+      // 이미지 업데이트
+      if(!isBoss){
+        const imgUrl = data.이미지URL || data.image_url || null;
+        if(imgUrl) setCurrentCharImg(imgUrl);
       }
-      // 보스 씬에서 추천 답변은 심기 최소 +3 보장
-      if(isBoss && data.stats) {
-        const raw = data.stats.폭군심기변화 || 0;
-        data.stats.폭군심기변화 = raw < 0 ? 3 : raw;
+
+      const nc = dialogCount+1;
+      setDialogCount(nc);
+
+      if(isBoss){
+        // 보스: 추천 답변 → 심기 +5 고정
+        const newHp = Math.min(30, bossHp+5);
+        setBossHp(newHp); setBossDelta(5);
+        setLoading(false);
+        if(newHp<=0){ setTimeout(()=>onDialogComplete("bossKill"),1500); return;}
+        if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("bossSurvive"),1500); return;}
+      } else {
+        // 일반: 추천 답변 → 호감도 +3 고정 (절대 마이너스 없음)
+        setAffDelta(3);
+        onStatsChange({affection:3});
+        setLoading(false);
+        if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("complete"),1500); return;}
       }
-      await handleBackendResponse(data, dialogCount+1);
-    } catch { setLoading(false); }
+    } catch {
+      // 백엔드 오류시 기본 대사로
+      const npcText = isBoss
+        ? BOSS_REC_REPLIES[Math.floor(Math.random()*BOSS_REC_REPLIES.length)]
+        : NPC_REC_REPLIES[Math.floor(Math.random()*NPC_REC_REPLIES.length)];
+      setMessages(m=>[...m,{role:"npc",text:npcText}]);
+      const nc = dialogCount+1;
+      setDialogCount(nc);
+      if(isBoss){
+        const newHp = Math.min(30,bossHp+5);
+        setBossHp(newHp); setBossDelta(5);
+      } else {
+        setAffDelta(3);
+        onStatsChange({affection:3});
+      }
+      setLoading(false);
+      if(nc>=maxDialog){ setTimeout(()=>onDialogComplete(isBoss?"bossSurvive":"complete"),1500); return;}
+    }
   }
 
   return (

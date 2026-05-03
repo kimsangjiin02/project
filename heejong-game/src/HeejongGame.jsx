@@ -58,33 +58,24 @@ const FACTION_HINTS = {
 // src/assets/ 폴더에 파일 넣고 경로 수정
 // ============================================================
 const IMAGES = {
-  // 프롤로그 배경 일러스트 (산/달/나무 그림)
-  prologue: null,           // 예: "/assets/prologue.png"
-
-  // 이름 입력 화면 - 플레이어 아바타
-  playerAvatar: null,       // 예: "/assets/player_avatar.png"
-
-  // 목표 화면 - 봉황 일러스트
-  phoenix: null,            // 예: "/assets/phoenix.png"
-
-  // 스탯 화면 - 각 스탯 아이콘
-  statAffection: null,      // 예: "/assets/stat_affection.png"  (호감도 - 악수/열쇠)
-  statSoldier: null,        // 예: "/assets/stat_soldier.png"    (무력 - 갑옷/무기)
-  statMinsim: null,         // 예: "/assets/stat_minsim.png"     (민심 - 등불/사람)
-
-  // 채팅 화면 - 희종 캐릭터 (호감도별로 다른 이미지 가능)
-  heejongLow: null,         // 예: "/assets/heejong_low.png"     (호감도 낮을 때)
-  heejongMid: null,         // 예: "/assets/heejong_mid.png"     (호감도 중간)
-  heejongHigh: null,        // 예: "/assets/heejong_high.png"    (호감도 높을 때)
-
-  // 채팅 화면 - 태황대군 캐릭터
-  tyrant: null,             // 예: "/assets/tyrant.png"
-
-  // 엔딩 화면 이미지들 (엔딩별로 다른 이미지)
-  endingSuccess: null,      // 예: "/assets/ending_success.png"
-  endingFail: null,         // 예: "/assets/ending_fail.png"
-  endingDeath: null,        // 예: "/assets/ending_death.png"
-  endingEvil: null,         // 예: "/assets/ending_evil.png"
+  prologue: "/assets/images/prologue.png",
+  phoenix: "/assets/images/phoenix.png",
+  statAffection: "/assets/images/stat_affection.png",
+  statSoldier: "/assets/images/stat_soldier.png",
+  statMinsim: "/assets/images/stat_minsim.png",
+  weekBg: "/assets/images/week_bg.png",
+  heejongLow: "/assets/images/heejong_low.png",
+  heejongMid: "/assets/images/heejong_mid.png",
+  heejongHigh: "/assets/images/heejong_high.png",
+  tyrant: "/assets/images/tyrant.png",
+  miniBg: "/assets/images/mini_board.png",
+  miniBgSoldier: "/assets/images/mini_soldier.png",
+  scrollBg: "/assets/images/scroll.png",
+  bossLeftBg: "/assets/images/boss_left.png",
+  endingSuccess: "/assets/images/ending_success.png",
+  endingFail: "/assets/images/ending_fail.png",
+  endingDeath: "/assets/images/ending_death.png",
+  endingEvil: "/assets/images/ending_evil.png",
 };
 
 // 호감도에 따라 희종 이미지 선택
@@ -113,386 +104,269 @@ const styles = `
     font-family: 'ShillaCulture';
     src: url('/assets/fonts/Shilla_Culture_M_.ttf') format('truetype');
     font-weight: 400;
-    font-style: normal;
   }
   @font-face {
     font-family: 'ShillaCulture';
     src: url('/assets/fonts/Shilla_Culture_B_.ttf') format('truetype');
     font-weight: 700;
-    font-style: normal;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  *{font-family:'ShillaCulture',serif !important}
   :root{
-    --bg:#2d1f0e;
-    --bg-dark:#1a1208;
-    --paper:#f0e6cc;
-    --paper-light:#fdf5e0;
+    --bg:#2b1d0f;
+    --gray:#d9d5ce;
+    --gray-dark:#c8c4bc;
+    --paper:#f5ead6;
+    --paper-light:#fdf8ee;
     --ink:#2c1a0e;
     --gold:#c9a84c;
     --gold2:#e8c97a;
     --white:#fdf8f0;
-    --cu:#3d2a1a;
-    --gray-btn:#6b5f52;
-    --boss-bg:#4a0808;
-    --boss-dark:#2a0000;
     --safe-top:env(safe-area-inset-top,0px);
     --safe-bot:env(safe-area-inset-bottom,0px);
   }
-  html,body{font-family:'ShillaCulture','Noto Serif KR',serif;background:var(--bg-dark);color:var(--white);height:100%;overflow:hidden}
-  .fade{animation:fi 0.45s ease}
-  @keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+  html,body{background:var(--bg);color:var(--white);height:100%;overflow:hidden}
+  .fade{animation:fi 0.4s ease}
+  @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
   .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:sp 0.8s linear infinite}
   @keyframes sp{to{transform:rotate(360deg)}}
 
-  /* ── 공통 버튼 (이미지 기준: 이전=회색, 다음=황금) ── */
-  .btn-prev{
-    background:#5a5048;color:#e8dcc8;border:none;border-radius:6px;
-    padding:12px 28px;font-size:15px;font-family:inherit;cursor:pointer;
-    letter-spacing:0.04em;transition:opacity 0.2s;
-  }
-  .btn-prev:active{opacity:0.75}
-  .btn-next{
-    background:#4a3822;color:#e8c97a;border:2px solid #c9a84c;border-radius:6px;
-    padding:12px 32px;font-size:15px;font-family:inherit;cursor:pointer;
-    letter-spacing:0.04em;transition:opacity 0.2s;
-  }
-  .btn-next:active{opacity:0.75}
+  /* ── 버튼 ── */
+  .btn-prev{background:#5c5248;color:#d8ccc0;border:none;border-radius:6px;padding:10px 24px;font-size:15px;cursor:pointer;letter-spacing:0.03em}
+  .btn-next{background:#3a2c1a;color:#e8c97a;border:2px solid #c9a84c;border-radius:6px;padding:10px 28px;font-size:15px;cursor:pointer;letter-spacing:0.03em}
   .btn-next:disabled{opacity:0.4;cursor:default}
-  .btn-start{
-    background:#6b5228;color:#e8c97a;border:2px solid #c9a84c;border-radius:6px;
-    padding:13px 0;font-size:15px;font-family:inherit;cursor:pointer;
-    width:100%;letter-spacing:0.05em;transition:opacity 0.2s;
-  }
+  .btn-start{background:#5a4420;color:#e8c97a;border:2px solid #c9a84c;border-radius:6px;padding:9px 0;font-size:14px;cursor:pointer;width:75%;max-width:200px;letter-spacing:0.04em}
   .btn-start:disabled{opacity:0.4;cursor:default}
 
-  /* ── 풀스크린 레이아웃 ── */
-  .page{
-    width:100vw;height:100vh;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    background:var(--bg-dark);padding:0;overflow:hidden;position:relative;
-  }
-
-  /* 하단 버튼 바 (이미지처럼 화면 맨 아래 좌우) */
-  .bottom-nav{
-    position:absolute;bottom:0;left:0;right:0;
-    display:flex;justify-content:space-between;align-items:center;
-    padding:20px 28px;padding-bottom:calc(20px + var(--safe-bot));
-    background:rgba(0,0,0,0.15);
-  }
-
-  /* ── 프롤로그 ── */
-  .prologue-wrap{
-    width:100%;height:100%;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    background:var(--bg-dark);gap:0;
-  }
-  .prologue-illust{
-    width:180px;height:140px;object-fit:contain;
-    margin-bottom:28px;flex-shrink:0;
-  }
-  .prologue-illust-placeholder{
-    width:180px;height:140px;margin-bottom:28px;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;
-    color:rgba(201,168,76,0.3);font-size:12px;
-  }
-  .prologue-text{
-    font-size:15px;line-height:2.0;color:rgba(253,248,240,0.88);
-    text-align:center;max-width:640px;padding:0 36px;
-    flex-shrink:0;
-  }
+  /* ── 풀스크린 (프롤로그/목표/스탯/이름) ── */
+  .page{width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#2b1d0f;padding:0;overflow:hidden;position:relative}
+  .bottom-nav{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:18px 26px;padding-bottom:calc(18px + var(--safe-bot))}
+  .prologue-wrap{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#2b1d0f}
+  .prologue-illust{width:180px;height:140px;object-fit:contain;margin-bottom:28px;flex-shrink:0}
+  .prologue-illust-placeholder{width:180px;height:140px;margin-bottom:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:rgba(201,168,76,0.3);font-size:12px}
+  .prologue-text{font-size:15px;line-height:2.1;color:rgba(253,248,240,0.9);text-align:center;max-width:640px;padding:0 36px;flex-shrink:0}
   .prologue-dots{display:flex;gap:8px;justify-content:center;margin-top:24px;margin-bottom:80px}
   .dot{width:7px;height:7px;border-radius:50%;background:rgba(201,168,76,0.25);transition:background 0.3s}
   .dot.a{background:var(--gold)}
-
-  /* ── 이름 입력 ── */
-  .name-wrap{
-    display:flex;flex-direction:column;align-items:center;gap:18px;
-    width:100%;max-width:380px;padding:0 24px;
-  }
-  .name-desc{font-size:15px;color:rgba(253,248,240,0.85);text-align:center;line-height:1.9}
-  .name-avatar-wrap{
-    width:100px;height:100px;border-radius:50%;
-    background:#4a3a2a;border:2px solid #7a6040;
-    display:flex;align-items:center;justify-content:center;
-    overflow:hidden;
-  }
+  .name-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:340px;padding:0 20px}
+  .name-desc{font-size:14px;color:rgba(253,248,240,0.88);text-align:center;line-height:1.9}
+  .name-avatar-wrap{width:100px;height:100px;border-radius:50%;background:#3a2a1a;border:2px solid #6a5030;display:flex;align-items:center;justify-content:center;overflow:hidden}
   .name-avatar-wrap img{width:100%;height:100%;object-fit:cover}
-  .name-avatar-placeholder{font-size:32px;color:#8a7050}
-  .name-row{display:flex;align-items:center;gap:10px;width:100%}
-  .name-label{font-size:15px;color:var(--gold);white-space:nowrap;flex-shrink:0}
-  .name-input{
-    flex:1;background:#3a2e1e;border:1px solid #6a5030;
-    border-radius:6px;padding:10px 14px;color:var(--white);
-    font-size:14px;font-family:inherit;outline:none;
-  }
+  .name-avatar-placeholder{font-size:36px;color:#6a5030}
+  .name-row{display:flex;align-items:center;gap:8px;width:100%}
+  .name-label{font-size:14px;color:rgba(253,248,240,0.8);white-space:nowrap;flex-shrink:0}
+  .name-input{flex:1;background:#2a1e10;border:1px solid #5a4020;border-radius:4px;padding:8px 12px;color:var(--white);font-size:14px;outline:none}
   .name-input:focus{border-color:var(--gold)}
-
-  /* ── 목표 화면 ── */
-  .goal-wrap{
-    display:flex;flex-direction:column;align-items:center;gap:20px;
-    width:100%;max-width:500px;padding:0 24px;
-  }
-  .goal-title{font-size:28px;font-weight:700;color:var(--white);letter-spacing:0.1em}
+  .goal-wrap,.stat-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:480px;padding:0 24px}
+  .goal-title,.stat-title{font-size:28px;font-weight:700;color:var(--white);letter-spacing:0.1em}
   .goal-illust{width:120px;height:100px;object-fit:contain}
-  .goal-illust-placeholder{width:120px;height:100px;display:flex;align-items:center;justify-content:center;font-size:48px}
-  .goal-box{
-    background:var(--paper-light);border-radius:8px;
-    padding:24px 28px;text-align:center;width:100%;
-  }
-  .goal-box p{font-size:14px;line-height:2.0;color:var(--ink)}
-
-  /* ── 스탯 화면 ── */
-  .stat-wrap{
-    display:flex;flex-direction:column;align-items:center;gap:20px;
-    width:100%;max-width:500px;padding:0 24px;
-  }
-  .stat-title{font-size:28px;font-weight:700;color:var(--white);letter-spacing:0.1em}
-  .stat-box{background:var(--paper-light);border-radius:8px;padding:24px 20px;width:100%}
-  .stat-box-desc{font-size:13px;color:var(--ink);text-align:center;margin-bottom:20px}
-  .stat-icons-row{display:flex;justify-content:space-around;align-items:flex-end;gap:16px}
+  .goal-illust-placeholder,.stat-item-placeholder{display:flex;align-items:center;justify-content:center;font-size:40px}
+  .goal-illust-placeholder{width:120px;height:100px}
+  .goal-box,.stat-box{background:var(--paper-light);border-radius:6px;padding:22px 24px;width:100%}
+  .goal-box p,.stat-box-desc{font-size:14px;color:var(--ink);line-height:2.0;text-align:center}
+  .stat-box-desc{margin-bottom:20px}
+  .stat-icons-row{display:flex;justify-content:space-around;align-items:flex-end;gap:12px}
   .stat-item-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
   .stat-item-img{width:80px;height:80px;object-fit:contain}
-  .stat-item-placeholder{width:80px;height:80px;display:flex;align-items:center;justify-content:center;font-size:40px}
+  .stat-item-placeholder{width:80px;height:80px}
   .stat-item-label{font-size:14px;color:var(--ink);font-weight:500}
+
+  /* ── 주차 전환 ── */
+  .week-screen{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:#2b1d0f;position:relative;overflow:hidden}
+  .week-card{position:relative;z-index:2;width:100%;max-width:520px;background:rgba(20,14,6,0.9);border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:32px 28px;text-align:center;margin:0 20px}
+  .week-card-title{font-size:28px;font-weight:700;color:#e8c97a;margin-bottom:18px;letter-spacing:0.08em}
+  .week-card-text{font-size:14px;line-height:2.1;color:rgba(253,248,240,0.85);white-space:pre-line;margin-bottom:28px}
 
   /* ── 채팅 공통 ── */
   .chat{width:100vw;height:100vh;overflow:hidden;display:flex;flex-direction:column}
 
   /* 모바일 상단바 */
-  .mob-topbar{
-    background:#2c1a0e;padding:8px 12px;
-    padding-top:calc(8px + var(--safe-top));
-    display:flex;align-items:center;gap:6px;
-    flex-shrink:0;border-bottom:1px solid #5a3a1a;
-  }
-  .chat.boss .mob-topbar{background:#5a0a0a;border-color:#8a1a1a}
+  .mob-topbar{background:#1e1008;padding:8px 12px;padding-top:calc(8px + var(--safe-top));display:flex;align-items:center;gap:6px;flex-shrink:0;border-bottom:1px solid #3a2010}
+  .chat.boss .mob-topbar{background:#4a0000;border-color:#7a0000}
   .wchip{font-size:11px;color:var(--gold);font-weight:700;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:3px 9px;white-space:nowrap;flex-shrink:0}
   .schips{display:flex;gap:5px;flex:1;overflow:hidden}
   .schip{font-size:10px;background:rgba(245,234,214,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:20px;padding:3px 7px;white-space:nowrap;color:rgba(253,248,240,0.85);display:flex;align-items:center;gap:3px}
   .schip b{color:var(--gold2)}
   .cthumb{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;overflow:hidden}
   .cthumb img{width:100%;height:100%;object-fit:cover}
-
-  /* 보스 HP바 (모바일) */
-  .mob-bossbar{background:#5a0a0a;padding:5px 12px;flex-shrink:0;border-bottom:1px solid #8a1a1a;display:flex;align-items:center;gap:8px}
+  .mob-bossbar{background:#5a0000;padding:5px 12px;flex-shrink:0;border-bottom:1px solid #8a0000;display:flex;align-items:center;gap:8px}
   .bblbl{font-size:10px;color:#f5c0c0;white-space:nowrap}
   .bbtrk{flex:1;height:6px;background:#3a0000;border-radius:4px;overflow:hidden}
   .bbfil{height:100%;background:linear-gradient(90deg,#c62828,#ff5252);transition:width 0.4s}
   .bbval{font-size:12px;color:#ff6b6b;font-weight:700;white-space:nowrap}
-
-  /* 나레이션 배너 (모바일) */
-  .mob-narr{background:var(--paper);border-bottom:1px solid #c8b48a;padding:8px 12px;flex-shrink:0;cursor:pointer;display:flex;align-items:flex-start;gap:8px;user-select:none}
-  .chat.boss .mob-narr{background:#3a0a0a;border-color:#6a1a1a}
-  .mob-narrtx{font-size:11px;color:#5a3a1a;line-height:1.6;flex:1}
+  .mob-narr{background:var(--gray);border-bottom:1px solid #b0a898;padding:8px 12px;flex-shrink:0;cursor:pointer;display:flex;align-items:flex-start;gap:8px;user-select:none}
+  .chat.boss .mob-narr{background:#300808;border-color:#6a0000}
+  .mob-narrtx{font-size:11px;color:#4a3a28;line-height:1.6;flex:1}
   .chat.boss .mob-narrtx{color:#f5c0c0}
-  .mob-narr-arr{font-size:11px;color:#8a6030;flex-shrink:0}
+  .mob-narr-arr{font-size:11px;color:#6a5838;flex-shrink:0}
 
-  /* 메시지 영역 */
-  .msgs{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:11px;-webkit-overflow-scrolling:touch;background:#e8dcc8}
-  .chat.boss .msgs{background:#2a0000}
+  /* 메시지 - 전체 회색 */
+  .msgs{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;background:var(--gray)}
+  .chat.boss .msgs{background:#1a0000}
   .msgs::-webkit-scrollbar{width:3px}
-  .msgs::-webkit-scrollbar-thumb{background:#c8b48a;border-radius:2px}
+  .msgs::-webkit-scrollbar-thumb{background:#b0a898;border-radius:2px}
   .msg{display:flex;flex-direction:column;max-width:78%}
   .msg.npc{align-self:flex-start;align-items:flex-start}
   .msg.usr{align-self:flex-end;align-items:flex-end}
-  .mname{font-size:10px;color:#8a7050;margin-bottom:3px}
-  .bub{padding:9px 13px;border-radius:17px;font-size:13px;line-height:1.75}
-  .msg.npc .bub{background:#fff;color:#2c1a0e;border-bottom-left-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.12)}
-  .msg.usr .bub{background:#5a3a28;color:var(--white);border-bottom-right-radius:4px}
-  .chat.boss .msg.npc .bub{background:#3d0808;color:#f5c0c0;border:1px solid #6a1a1a}
+  .mname{font-size:10px;color:#6a5838;margin-bottom:3px}
+  .bub{padding:9px 14px;border-radius:18px;font-size:13px;line-height:1.75}
+  .msg.npc .bub{background:#4a3828;color:#f5ead6;border-bottom-left-radius:4px}
+  .msg.usr .bub{background:#f0ece4;color:#2c1a0e;border-bottom-right-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,0.1)}
+  .chat.boss .msg.npc .bub{background:#3d0808;color:#f5c0c0;border:1px solid #6a0000}
 
-  /* 추천 답변 가로스크롤 */
-  .recbar{background:#e8d8b8;border-top:1px solid #c8b48a;padding:7px 10px;flex-shrink:0}
+  /* 추천답변 - 회색 배경 */
+  .recbar{background:var(--gray-dark);border-top:1px solid #b0a898;padding:7px 10px;flex-shrink:0}
   .chat.boss .recbar{display:none}
   .recscr{display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
   .recscr::-webkit-scrollbar{display:none}
-  .rchip{background:var(--paper-light);border:1px solid #c0a060;border-radius:20px;padding:6px 12px;font-size:12px;font-family:inherit;color:#2c1a0e;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.15s}
-  .rchip:active{background:#ddc880}
+  .rchip{background:#fff;border:1px solid #d0c8b8;border-radius:20px;padding:7px 14px;font-size:12px;color:#3a2a1a;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background 0.15s;box-shadow:0 1px 2px rgba(0,0,0,0.06)}
+  .rchip:active{background:#f0e8d0}
   .rchip:disabled{opacity:0.5;cursor:default}
   .recgen{font-size:11px;color:#8a7050;padding:6px 8px;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0}
 
-  /* 입력창 */
-  .inrow{display:flex;gap:7px;padding:9px 10px;padding-bottom:calc(9px + var(--safe-bot));background:#d8c8a8;border-top:1px solid #b8a888;flex-shrink:0}
-  .chat.boss .inrow{background:#3a0808;border-color:#6a1a1a}
-  .ci{flex:1;background:#f8f0e0;border:1px solid #c8b48a;border-radius:22px;padding:9px 14px;font-size:14px;font-family:inherit;color:#2c1a0e;outline:none}
-  .chat.boss .ci{background:#2a0808;border-color:#6a1a1a;color:#f5c0c0}
+  /* 입력창 - 회색 */
+  .inrow{display:flex;gap:7px;padding:8px 10px;padding-bottom:calc(8px + var(--safe-bot));background:var(--gray-dark);border-top:1px solid #b0a898;flex-shrink:0}
+  .chat.boss .inrow{background:#280808;border-color:#5a0000}
+  .ci{flex:1;background:#f0ece4;border:1px solid #c0b8a8;border-radius:20px;padding:9px 14px;font-size:14px;color:#2c1a0e;outline:none}
+  .chat.boss .ci{background:#1a0808;border-color:#5a0000;color:#f5c0c0}
   .ci:focus{border-color:#a07030}
-  .sbtn{background:#3d2a1a;color:#fff;border:none;border-radius:50%;width:40px;height:40px;flex-shrink:0;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:opacity 0.2s}
+  .sbtn{background:#2c1a0e;color:#fff;border:none;border-radius:6px;width:44px;height:36px;flex-shrink:0;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
   .sbtn:disabled{opacity:0.5}
-  .dcnt{font-size:10px;color:#8a7050;text-align:center;padding:2px 0;flex-shrink:0;background:#d8c8a8}
-  .chat.boss .dcnt{background:#3a0808;color:#f5c0c0}
+  .dcnt{font-size:10px;color:#6a5838;text-align:center;padding:2px 0;flex-shrink:0;background:var(--gray-dark)}
+  .chat.boss .dcnt{background:#280808;color:#f5c0c0}
 
-  /* PC 3컬럼 레이아웃 */
+  /* ── PC 3컬럼 — 전체 회색(#d9d5ce) ── */
   @media(min-width:768px){
-    /* 일반 채팅 PC */
+    /* 일반 채팅 — 전체 회색 */
     .chat:not(.boss){
       display:grid!important;
-      grid-template-columns:230px 1fr 260px;
+      grid-template-columns:220px 1fr 270px;
       grid-template-rows:100vh;
-      background:#d4c4a0;
+      background:var(--gray);
     }
-    .chat:not(.boss) .mob-topbar{display:none!important}
-    .chat:not(.boss) .mob-narr{display:none!important}
-    .chat:not(.boss) .recbar{display:none!important}
-    .chat:not(.boss) .msgs{padding:16px 18px;gap:12px;background:#e8dcc8}
+    .chat:not(.boss) .mob-topbar,.chat:not(.boss) .mob-narr,.chat:not(.boss) .recbar{display:none!important}
+    .chat:not(.boss) .msgs{padding:16px;gap:14px;background:var(--gray)}
     .chat:not(.boss) .msg{max-width:70%}
-    .chat:not(.boss) .inrow{padding:12px 16px;padding-bottom:12px;background:#d8c8a8}
-    .chat:not(.boss) .dcnt{background:#d8c8a8}
+    .chat:not(.boss) .inrow{padding:10px 14px;padding-bottom:10px;background:var(--gray-dark);border-top:1px solid #b0a898}
+    .chat:not(.boss) .dcnt{background:var(--gray-dark)}
 
-    /* 보스 채팅 PC */
-    .chat.boss{
-      display:grid!important;
-      grid-template-columns:220px 1fr 200px;
-      grid-template-rows:100vh;
-      background:var(--boss-dark);
-    }
-    .chat.boss .mob-topbar{display:none!important}
-    .chat.boss .mob-bossbar{display:none!important}
-    .chat.boss .mob-narr{display:none!important}
-    .chat.boss .msgs{padding:16px 18px;gap:12px}
+    /* 보스 채팅 */
+    .chat.boss{display:grid!important;grid-template-columns:220px 1fr 200px;grid-template-rows:100vh;background:#1a0000}
+    .chat.boss .mob-topbar,.chat.boss .mob-bossbar,.chat.boss .mob-narr{display:none!important}
+    .chat.boss .msgs{padding:16px;gap:14px}
     .chat.boss .msg{max-width:72%}
     .chat.boss .inrow{padding:12px 16px;padding-bottom:12px}
-    .chat.boss .dcnt{background:var(--boss-dark)}
+    .chat.boss .dcnt{background:#1a0000}
 
-    /* PC 왼쪽 패널 - 일반 채팅 */
+    /* PC 왼쪽 — 회색 배경 */
     .pcl{
       display:flex!important;flex-direction:column;align-items:center;
-      padding:20px 14px;gap:12px;overflow-y:auto;height:100vh;
-      background:var(--paper);border-right:2px solid #c8b48a;
+      padding:16px 12px;gap:10px;overflow-y:auto;height:100vh;
+      background:var(--gray);border-right:1px solid #b8b4ac;
     }
+    /* 주차 뱃지 — 이미지처럼 한지색 배경 */
     .pcwk{
-      font-size:26px;font-weight:700;color:var(--ink);letter-spacing:0.08em;
-      background:rgba(201,168,76,0.15);border:1px solid #c8b48a;
-      border-radius:4px;padding:6px 14px;width:100%;text-align:center;
+      font-size:30px;font-weight:700;color:var(--ink);
+      background:rgba(245,234,214,0.9);border:1px solid #c0a870;
+      border-radius:4px;padding:4px 12px;width:100%;text-align:left;
     }
+    /* 캐릭터 이미지 */
     .pccharimg{
-      width:180px;height:200px;border:2px solid #b8a070;border-radius:4px;
-      overflow:hidden;background:#d4c4a0;
+      width:100%;height:280px;border:1px solid #b8a070;border-radius:4px;
+      overflow:hidden;background:rgba(245,234,214,0.8);
       display:flex;align-items:center;justify-content:center;
       flex-direction:column;gap:6px;color:#8a7050;font-size:11px;text-align:center;
+      flex-shrink:0;
     }
     .pccharimg img{width:100%;height:100%;object-fit:cover;object-position:top}
-    .pccharimg-label{font-size:11px;color:#6a5030;padding:4px 8px;background:rgba(201,168,76,0.2);width:100%;text-align:center}
-    .pcsts{display:flex;gap:6px;width:100%}
-    .pcst{flex:1;background:#f0e4c8;border:1px solid #c8b48a;border-radius:4px;padding:7px 4px;text-align:center;min-width:0}
-    .pcstn{font-size:9px;color:#6b5a3a;letter-spacing:0.04em;margin-bottom:2px}
-    .pcstv{font-size:18px;font-weight:700;color:var(--ink)}
-    .pcdcnt{font-size:11px;color:#8a7050;text-align:center}
+    .pccharimg-label{font-size:10px;color:#6a5030;padding:4px 8px;background:rgba(201,168,76,0.12);width:100%;text-align:center}
+    /* 스탯 카드 3개 — 회색 배경 */
+    .pcsts{display:flex;gap:5px;width:100%}
+    .pcst{flex:1;background:rgba(245,234,214,0.8);border:1px solid #c0a870;border-radius:4px;padding:6px 3px;text-align:center;min-width:0}
+    .pcstn{font-size:9px;color:#6b5a3a;letter-spacing:0.02em;margin-bottom:1px}
+    .pcstv{font-size:17px;font-weight:700;color:var(--ink);line-height:1.2}
+    .pcst-sub{font-size:8px;color:#8a6030}
+    .pcdcnt{font-size:11px;color:#6a5838;text-align:center}
 
-    /* PC 왼쪽 패널 - 보스 채팅 (나레이션) */
-    .boss-pcl{
-      display:flex!important;flex-direction:column;
-      padding:0;overflow-y:auto;height:100vh;
-      background:var(--paper);
-    }
+    /* 보스 왼쪽 */
+    .boss-pcl{display:flex!important;flex-direction:column;padding:0;overflow-y:auto;height:100vh;background:var(--paper)}
     .boss-pcl-inner{padding:20px 16px;flex:1}
-    .boss-pcl-title{
-      font-size:22px;font-weight:700;color:var(--boss-bg);
-      letter-spacing:0.05em;margin-bottom:12px;line-height:1.3;
-    }
-    .boss-pcl-desc{font-size:13px;line-height:2.0;color:#3a1a1a;margin-bottom:12px;white-space:pre-line}
+    .boss-pcl-title{font-size:24px;font-weight:700;color:#6a0000;letter-spacing:0.05em;margin-bottom:12px;line-height:1.4}
+    .boss-pcl-desc{font-size:13px;line-height:2.0;color:#3a1a0a;margin-bottom:12px;white-space:pre-line}
     .boss-pcl-tip{font-size:12px;color:#8a2020;font-style:italic}
 
     /* PC 가운데 */
     .pcc{display:flex!important;flex-direction:column;height:100vh;overflow:hidden}
-    .pcchdr{
-      padding:10px 16px;font-size:12px;text-align:center;
-      letter-spacing:0.04em;flex-shrink:0;
-      background:#2c1a0e;color:var(--gold2);border-bottom:1px solid #5a3a1a;
-    }
-    .chat.boss .pcchdr{background:#5a0a0a;border-color:#8a1a1a;color:#f5c0c0}
+    .pcchdr{padding:8px 16px;font-size:11px;text-align:center;letter-spacing:0.04em;flex-shrink:0;background:#1e1008;color:var(--gold2);border-bottom:1px solid #3a2010}
+    .chat.boss .pcchdr{background:#4a0000;border-color:#7a0000;color:#f5c0c0}
 
-    /* PC 오른쪽 패널 - 일반 채팅 (두루마리 나레이션) */
+    /* PC 오른쪽 — 회색 배경 */
     .pcr{
       display:flex!important;flex-direction:column;
-      padding:16px 14px;gap:12px;overflow-y:auto;height:100vh;
-      background:var(--paper);border-left:2px solid #c8b48a;
+      padding:0;gap:0;overflow-y:auto;height:100vh;
+      background:var(--gray);border-left:1px solid #b8b4ac;
+      position:relative;
     }
-    .scroll-frame{
-      background:var(--paper-light);border:1px solid #c0a060;
-      border-radius:4px;padding:14px 12px;font-size:12px;
-      line-height:1.85;color:var(--ink);
-      box-shadow:inset 0 1px 4px rgba(0,0,0,0.06);
+    .pcr-scroll-img{width:100%;flex-shrink:0}
+    .pcr-scroll-img img{width:100%;height:auto;object-fit:contain;display:block}
+    /* 두루마리 없을 때 텍스트 박스 */
+    .pcr-scroll-fallback{
+      background:rgba(245,234,214,0.9);border:1px solid #c0a060;
+      margin:12px;border-radius:4px;padding:14px 12px;
+      font-size:12px;line-height:1.85;color:var(--ink);
     }
     .scroll-title{font-size:13px;font-weight:700;color:#5a3a1a;margin-bottom:8px}
     .tip-text{font-size:11px;color:#7a5a2a;margin-top:8px;font-style:italic}
-    .pcrec-list{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+    .pcr-content{padding:8px 12px;display:flex;flex-direction:column;gap:0}
+    /* 추천답변 버튼 — 이미지처럼 흰 배경 둥근 직사각형 */
+    .pcrec-wrap{padding:8px 12px;display:flex;flex-direction:column;gap:8px}
     .pcrec-btn{
-      background:var(--paper);border:1px solid #c8a860;border-radius:20px;
-      padding:8px 12px;font-size:12px;font-family:inherit;color:var(--ink);
-      cursor:pointer;text-align:left;line-height:1.4;transition:background 0.15s;
+      background:#fff;border:1px solid #d0c8b8;border-radius:8px;
+      padding:10px 14px;font-size:13px;color:#3a2a1a;
+      cursor:pointer;text-align:left;line-height:1.4;
+      transition:background 0.15s;box-shadow:0 1px 2px rgba(0,0,0,0.06);
     }
-    .pcrec-btn:hover{background:#ead4a0;border-color:#a07030}
+    .pcrec-btn:hover{background:#f5edd8;border-color:#b0a070}
     .pcrec-btn:disabled{opacity:0.5;cursor:default}
 
-    /* PC 오른쪽 패널 - 보스 채팅 (캐릭터+심기) */
-    .boss-pcr{
-      display:flex!important;flex-direction:column;align-items:center;
-      padding:0;height:100vh;overflow:hidden;
-      background:#3a0000;border-left:2px solid #6a1a1a;
-    }
-    .boss-pcr-charimg{
-      width:100%;height:55%;overflow:hidden;
-      display:flex;align-items:center;justify-content:center;
-      background:#2a0000;color:#6a2020;font-size:12px;
-    }
+    /* 보스 오른쪽 */
+    .boss-pcr{display:flex!important;flex-direction:column;align-items:center;padding:0;height:100vh;overflow:hidden;background:#2a0000;border-left:2px solid #5a0000}
+    .boss-pcr-charimg{width:100%;flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#1a0000;color:#5a2020;font-size:12px}
     .boss-pcr-charimg img{width:100%;height:100%;object-fit:cover;object-position:top}
-    .boss-pcr-hp{
-      width:100%;padding:16px;flex:1;
-      background:#4a0a0a;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;gap:8px;
-      border-top:2px solid #7a1a1a;
-    }
+    .boss-pcr-hp{width:100%;padding:16px;background:#3d0000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-top:2px solid #6a0000}
     .boss-pcr-hplbl{font-size:16px;color:#f5c0c0;letter-spacing:0.08em}
-    .boss-pcr-hpval{font-size:48px;font-weight:700;color:#ff6b6b;line-height:1}
+    .boss-pcr-hpval{font-size:52px;font-weight:700;color:#fff;line-height:1}
     .boss-pcr-delta{font-size:13px;font-weight:600}
-    .boss-pcr-track{width:80%;height:8px;background:#2a0000;border-radius:4px;overflow:hidden;margin-top:4px}
+    .boss-pcr-track{width:80%;height:8px;background:#1a0000;border-radius:4px;overflow:hidden;margin-top:4px}
     .boss-pcr-fill{height:100%;background:linear-gradient(90deg,#c62828,#ff5252);transition:width 0.4s}
   }
 
   /* ── 미니게임 ── */
-  .mini{width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#e8dcc8;padding:36px 18px;overflow-y:auto}
-  .mboard{background:var(--paper-light);border:3px solid #8a6020;border-radius:8px;padding:30px 22px;width:100%;max-width:460px;text-align:center;position:relative;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
+  .mini{width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--gray);padding:36px 18px;overflow-y:auto}
+  .mboard{background:var(--paper-light);border:3px solid #8a6020;border-radius:8px;padding:32px 24px;width:100%;max-width:460px;text-align:center;position:relative;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
   .rope{position:absolute;top:-26px;left:50%;transform:translateX(-50%);width:55%;height:26px;background:repeating-linear-gradient(90deg,#8a6020 0%,#b08040 4px,#8a6020 8px);border-radius:4px 4px 0 0}
   .mtitle{font-size:24px;font-weight:700;color:var(--ink);margin-bottom:14px;letter-spacing:0.06em}
   .mdesc{font-size:13px;line-height:1.85;color:#3a2a0e;margin-bottom:18px}
   .mopts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
-  .mbtn{background:var(--paper);border:2px solid #c8b48a;border-radius:8px;padding:15px 6px;font-size:17px;font-weight:700;font-family:inherit;color:var(--ink);cursor:pointer;transition:background 0.15s,transform 0.1s}
+  .mbtn{background:var(--paper);border:2px solid #c8b48a;border-radius:8px;padding:15px 6px;font-size:17px;font-weight:700;color:var(--ink);cursor:pointer;transition:background 0.15s,transform 0.1s}
   .mbtn:active{transform:scale(0.97)}
   .mbtn.sel{background:#c9a84c;border-color:#8a6020;color:#fff}
   .mbtn.wrong{background:#c62828;border-color:#7a0000;color:#fff}
   .mred{color:#c62828;font-weight:700;font-size:12px;margin-bottom:3px}
-  .minp{background:#fff;border:2px solid #c8b48a;border-radius:8px;padding:11px 14px;font-size:15px;font-family:inherit;color:var(--ink);width:100%;outline:none;text-align:center;margin-bottom:7px}
+  .minp{background:#fff;border:2px solid #c8b48a;border-radius:8px;padding:11px 14px;font-size:15px;color:var(--ink);width:100%;outline:none;text-align:center;margin-bottom:7px}
   .minp:focus{border-color:#a07030}
-  .msub{background:var(--cu);color:#fff;border:none;border-radius:8px;padding:12px 0;font-size:14px;font-family:inherit;cursor:pointer;width:100%;margin-top:3px}
+  .msub{background:#3d2510;color:#fff;border:none;border-radius:8px;padding:12px 0;font-size:14px;cursor:pointer;width:100%;margin-top:3px}
 
   /* ── 엔딩 ── */
-  .ending{
-    width:100vw;height:100vh;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    background:#e8e0d0;padding:32px 18px;overflow-y:auto;gap:16px;
-  }
+  .ending{width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--gray);padding:32px 18px;overflow-y:auto;gap:16px}
   .etitle{font-size:26px;font-weight:700;color:var(--ink);letter-spacing:0.08em;text-align:center}
-  .eimg-wrap{
-    width:180px;height:140px;background:#1a1208;
-    border:2px solid #3a2a0e;border-radius:4px;
-    display:flex;align-items:center;justify-content:center;
-    color:rgba(201,168,76,0.4);font-size:11px;overflow:hidden;
-  }
+  .eimg-wrap{width:180px;height:140px;background:#1a1208;border:2px solid #3a2a0e;border-radius:4px;display:flex;align-items:center;justify-content:center;color:rgba(201,168,76,0.4);font-size:11px;overflow:hidden}
   .eimg-wrap img{width:100%;height:100%;object-fit:cover}
-  .scroll-ending{width:100%;max-width:560px;position:relative}
+  .scroll-ending{width:100%;max-width:560px}
   .scroll-ending-poles{display:flex;align-items:stretch;width:100%}
-  .scroll-pole-l,.scroll-pole-r{
-    width:28px;background:#2a1a08;border-radius:4px;flex-shrink:0;
-    box-shadow:2px 0 6px rgba(0,0,0,0.4);
-  }
+  .scroll-pole-l,.scroll-pole-r{width:28px;background:#2a1a08;border-radius:4px;flex-shrink:0;box-shadow:2px 0 6px rgba(0,0,0,0.4)}
   .scroll-pole-r{box-shadow:-2px 0 6px rgba(0,0,0,0.4)}
-  .scroll-body{
-    flex:1;background:var(--paper-light);
-    padding:22px 20px;font-size:13px;line-height:2.1;
-    color:var(--ink);text-align:center;white-space:pre-line;
-    border-top:4px solid #8a6020;border-bottom:4px solid #8a6020;
-  }
+  .scroll-body{flex:1;background:var(--paper-light);padding:22px 20px;font-size:13px;line-height:2.1;color:var(--ink);text-align:center;white-space:pre-line;border-top:4px solid #8a6020;border-bottom:4px solid #8a6020}
 `;
 
 // ============================================================
@@ -657,19 +531,12 @@ function StatIntroScreen({ onNext, onPrev }) {
 function WeekTransitionScreen({ week, onNext }) {
   const info = WEEK_NARRATIVES[week];
   return (
-    <div className="page fade">
-      <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,#0e0a04 0%,#1a1208 60%,#2d1f0e 100%)"}}/>
-      {/* ↓ 배경 이미지 교체 위치
-          예: <img src="/assets/week_bg.png" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.35}} /> */}
-      <div style={{position:"relative",zIndex:2,width:"100%",maxWidth:520,
-        background:"rgba(20,14,6,0.9)",border:"1px solid rgba(201,168,76,0.3)",
-        borderRadius:12,padding:"32px 28px",textAlign:"center",margin:"0 20px"}}>
-        <div style={{fontSize:28,fontWeight:700,color:"#e8c97a",marginBottom:18,letterSpacing:"0.08em"}}>
-          ─ {info.title} ─
-        </div>
-        <div style={{fontSize:14,lineHeight:2.1,color:"rgba(253,248,240,0.85)",whiteSpace:"pre-line",marginBottom:28}}>
-          {info.text}
-        </div>
+    <div className="week-screen">
+      {/* ★ 주차 배경 이미지: IMAGES.weekBg 에 경로 입력하면 자동 적용 */}
+      {IMAGES.weekBg && <img src={IMAGES.weekBg} alt="배경" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
+      <div className="week-card fade" style={{zIndex:1}}>
+        <div className="week-card-title">─ {info.title} ─</div>
+        <div className="week-card-text">{info.text}</div>
         <button className="btn-next" style={{width:"100%"}} onClick={onNext}>대화 시작하기</button>
       </div>
     </div>
@@ -692,6 +559,7 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
   const [dialogCount, setDialogCount] = useState(0);
   const [bossHp, setBossHp] = useState(20);
   const [bossDelta, setBossDelta] = useState(null);
+  const [affDelta, setAffDelta] = useState(null);  // 호감도 변화 표시용
   const [recAnswers, setRecAnswers] = useState(INIT_RECS[week]||[]);
   const [recLoading, setRecLoading] = useState(false);
   const [narrOpen, setNarrOpen] = useState(false);
@@ -705,25 +573,43 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
     return ()=>{ if(isBoss) fetch("http://localhost:8000/tyrant/end",{method:"POST"}).catch(()=>{}); };
   },[isBoss]);
 
-  const charImg = isBoss ? IMAGES.tyrant : getHeejongImage(stats.affection);
+  const [currentCharImg, setCurrentCharImg] = useState(null); // 백엔드가 주는 이미지 URL
+  const charImg = isBoss
+    ? (IMAGES.tyrant || null)
+    : (currentCharImg || getHeejongImage(stats.affection)); // 백엔드 URL 우선, 없으면 호감도 기반
   const npcName = isBoss ? "태황대군" : "희종";
   const hpPct = (bossHp/30)*100;
 
   async function handleBackendResponse(data, nc) {
+    // NPC 대사 표시
     setMessages(m=>[...m,{role:"npc",text:data.대사}]);
     if(Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
     setDialogCount(nc);
+    setLoading(false);
+
+    // ★ 백엔드가 이미지 URL을 주면 바로 적용
+    // 백엔드 응답에 "이미지URL" 또는 "image_url" 필드가 있으면 사용
+    if(!isBoss) {
+      const imgUrl = data.이미지URL || data.image_url || null;
+      if(imgUrl) setCurrentCharImg(imgUrl);
+      else {
+        // 백엔드 URL 없으면 호감도 기반 이미지로 fallback
+        setCurrentCharImg(null);
+      }
+    }
+
     if(isBoss){
       const delta = data.stats?.폭군심기변화||0;
       const newHp = Math.max(0,Math.min(30,bossHp+delta));
-      setBossHp(newHp); setBossDelta(delta); setLoading(false);
-      if(newHp<=0){onDialogComplete("bossKill");return;}
-      if(nc>=maxDialog){onDialogComplete("bossSurvive");return;}
+      setBossHp(newHp); setBossDelta(delta);
+      if(newHp<=0){ setTimeout(()=>onDialogComplete("bossKill"),1500); return;}
+      if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("bossSurvive"),1500); return;}
     } else {
-      onStatsChange({affection:data.stats?.호감도변화||0});
-      setLoading(false);
-      if(data.bad_ending){onDialogComplete("badAffection");return;}
-      if(nc>=maxDialog){onDialogComplete("complete");return;}
+      const affDelta = data.stats?.호감도변화||0;
+      setAffDelta(affDelta);
+      onStatsChange({affection:affDelta});
+      if(data.bad_ending){ setTimeout(()=>onDialogComplete("badAffection"),1500); return;}
+      if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("complete"),1500); return;}
     }
   }
 
@@ -744,6 +630,16 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
     setMessages(m=>[...m,{role:"user",text}]);
     try {
       const data = await callBackend(text);
+      // 추천 답변은 호감도가 절대 깎이지 않음 — 최소 +3 보장
+      if(!isBoss && data.stats) {
+        const raw = data.stats.호감도변화 || 0;
+        data.stats.호감도변화 = raw < 3 ? 3 : raw;
+      }
+      // 보스 씬에서 추천 답변은 심기 최소 +3 보장
+      if(isBoss && data.stats) {
+        const raw = data.stats.폭군심기변화 || 0;
+        data.stats.폭군심기변화 = raw < 0 ? 3 : raw;
+      }
       await handleBackendResponse(data, dialogCount+1);
     } catch { setLoading(false); }
   }
@@ -801,12 +697,23 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
           </div>
           <div className="pccharimg-label">(호감도 별 변화 이미지)</div>
           <div className="pcsts">
-            {[{n:"호감도",v:stats.affection},{n:"민심",v:stats.minsim},{n:"사병",v:stats.soldiers}].map(s=>(
-              <div className="pcst" key={s.n}>
-                <div className="pcstn">{s.n}</div>
-                <div className="pcstv">{s.v}</div>
+            <div className="pcst">
+              <div className="pcstn">호감도</div>
+              <div className="pcstv">{stats.affection}</div>
+              <div style={{fontSize:10,fontWeight:700,minHeight:14,
+                color:affDelta>0?"#2e7d32":affDelta<0?"#c62828":"transparent"}}>
+                {affDelta!==null&&affDelta!==0?(affDelta>0?`+${affDelta}`:affDelta):""}
               </div>
-            ))}
+            </div>
+            <div className="pcst">
+              <div className="pcstn">민심</div>
+              <div className="pcstv">{stats.minsim}</div>
+            </div>
+            <div className="pcst">
+              <div className="pcstn">사병</div>
+              <div className="pcstv">{stats.soldiers}</div>
+              <div className="pcst-sub">/1000</div>
+            </div>
           </div>
           <div className="pcdcnt">{dialogCount} / {maxDialog} 대화</div>
         </div>
@@ -815,7 +722,9 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
       {/* PC 왼쪽 패널 - 보스 채팅 (나레이션) */}
       {isBoss && (
         <div className="boss-pcl" style={{display:"none"}}>
-          <div className="boss-pcl-inner">
+          {/* ★ 보스 왼쪽 설명 이미지: IMAGES.bossLeftBg 에 경로 입력 */}
+          {IMAGES.bossLeftBg && <img src={IMAGES.bossLeftBg} alt="보스패널" style={{width:"100%",height:"auto",objectFit:"cover",position:"absolute",top:0,left:0,zIndex:0}}/>}
+          <div className="boss-pcl-inner" style={{position:"relative",zIndex:1}}>
             <div className="boss-pcl-title">태황대군과의<br/>대화</div>
             <div className="boss-pcl-desc">{info.text}</div>
             {info.tip && <div className="boss-pcl-tip">*Tip: {info.tip}</div>}
@@ -865,21 +774,26 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
       {/* PC 오른쪽 패널 - 일반 채팅 (나레이션+추천답변) */}
       {!isBoss&&(
         <div className="pcr" style={{display:"none"}}>
-          <div className="scroll-frame">
-            <div className="scroll-title">📜 나레이션</div>
-            <p style={{fontSize:12,lineHeight:1.9,whiteSpace:"pre-line"}}>{info.text}</p>
-            {info.tip&&<p className="tip-text">*Tip: {info.tip}</p>}
+          {/* ↓ 두루마리 배경 이미지 교체 위치
+              IMAGES.scrollBg 에 경로 입력하면 오른쪽 패널 상단에 두루마리 이미지 표시
+              예: IMAGES.scrollBg = "/assets/images/scroll_bg.png" */}
+          {/* 두루마리 이미지: IMAGES.scrollBg 에 경로 입력시 표시 */}
+          {IMAGES.scrollBg
+            ? <div className="pcr-scroll-img"><img src={IMAGES.scrollBg} alt="두루마리" /></div>
+            : <div className="pcr-scroll-fallback">
+                <div className="scroll-title">📜 나레이션</div>
+                <p style={{fontSize:12,lineHeight:1.9,whiteSpace:"pre-line"}}>{info.text}</p>
+                {info.tip&&<p className="tip-text">*Tip: {info.tip}</p>}
+              </div>
+          }
+          <div className="pcr-content">
+          <div className="pcrec-wrap">
+            {recLoading&&<div style={{fontSize:11,color:"#8a7050",padding:"4px 0"}}> 생성 중...</div>}
+            {recAnswers.map((a,i)=>(
+              <button key={i} className="pcrec-btn" onClick={()=>sendRecommended(a)}
+                disabled={loading||recLoading}>{a}</button>
+            ))}
           </div>
-          <div className="scroll-frame">
-            <div className="scroll-title">💬 추천 답변
-              {recLoading&&<span style={{fontSize:10,color:"#8a7050"}}> 생성 중...</span>}
-            </div>
-            <div className="pcrec-list">
-              {recAnswers.map((a,i)=>(
-                <button key={i} className="pcrec-btn" onClick={()=>sendRecommended(a)}
-                  disabled={loading||recLoading}>{a}</button>
-              ))}
-            </div>
           </div>
         </div>
       )}
@@ -960,8 +874,8 @@ function MiniAlly({ onResult, badFaction="죽" }) {
 
   return (
     <div className="mini">
-      <div className="mboard">
-        <div className="rope"/>
+      <div className="mboard" style={IMAGES.miniBg?{backgroundImage:`url(${IMAGES.miniBg})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:{}}>
+        {!IMAGES.miniBg && <div className="rope"/>}
         <div className="mtitle">협력 세력 고르기</div>
         <p className="mdesc">복위를 위해 협력 세력을 모을 차례입니다.<br/>다음 네 세력 중 한 세력을 제외하고 모두 복위에 우호적입니다.<br/>반(反)희종 세력을 피해 포섭할 하나의 협력 세력을 선택하세요.</p>
         <div className="mopts">
@@ -1009,8 +923,8 @@ function MiniLetter({ onResult }) {
 
   return (
     <div className="mini">
-      <div className="mboard">
-        <div className="rope"/>
+      <div className="mboard" style={IMAGES.miniBg?{backgroundImage:`url(${IMAGES.miniBg})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:{}}>
+        {!IMAGES.miniBg && <div className="rope"/>}
         <div className="mtitle">비밀 서신 전달하기</div>
         <p className="mdesc">희종의 복위 작전이 담긴 서신을 협력세력에게 전달해야 합니다.<br/>네 개의 길 중 한 개의 길에는 태황대군의 심복이 매복 중입니다.<br/>태황대군에게 발각되지 않을 길을 선택하여 서신을 전달해 주세요.</p>
         <div className="mopts">
@@ -1070,18 +984,21 @@ function MiniSoldier({ week, currentSoldiers, onResult }) {
 
   return (
     <div className="mini">
-      <div className="mboard">
-        <div className="rope"/>
+      <div className="mboard" style={IMAGES.miniBgSoldier?{backgroundImage:`url(${IMAGES.miniBgSoldier})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:IMAGES.miniBg?{backgroundImage:`url(${IMAGES.miniBg})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:{}}>
+        {!IMAGES.miniBg && !IMAGES.miniBgSoldier && <div className="rope"/>}
         <div className="mtitle">사병 키우기</div>
         <p className="mdesc">복위를 위한 필수 단계인 사병 모으기입니다.<br/>태황대군의 단속을 피해 세 차례에 걸쳐 최소 <b>1,000명</b>의 사병을 모아야 합니다.<br/>이번에는 몇 명의 사병을 모집할까요?</p>
         <p className="mred">*지금은 사병 단속이 <b>{cfg.label}</b> 기간입니다.</p>
         <p style={{fontSize:12,color:"#7a5a2a",marginBottom:4,fontStyle:"italic"}}>"{cfg.hint}"</p>
         <p style={{fontSize:12,color:"#5a4a2a",marginBottom:14}}>입력 범위: {cfg.min}~{cfg.max}명</p>
-        <input className="minp" type="number" min={cfg.min} max={cfg.max}
-          placeholder={`${cfg.min}~${cfg.max}`} value={input}
-          onChange={e=>{setInput(e.target.value);setError("");}}
-          onKeyDown={e=>e.key==="Enter"&&submit()}/>
-        <button className="msub" onClick={submit}>확인</button>
+        <div style={{display:"flex",gap:8,justifyContent:"center",alignItems:"center",marginTop:8}}>
+          <input className="minp" type="number" min={cfg.min} max={cfg.max}
+            placeholder={`${cfg.min}~${cfg.max}`} value={input}
+            style={{width:"70%",marginBottom:0}}
+            onChange={e=>{setInput(e.target.value);setError("");}}
+            onKeyDown={e=>e.key==="Enter"&&submit()}/>
+          <button className="msub" onClick={submit} style={{width:"20%",padding:"12px 0",margin:0}}>확인</button>
+        </div>
         {error&&<p style={{color:"#c62828",marginTop:8,fontSize:12}}>{error}</p>}
         <div style={{marginTop:12,fontSize:12,color:"#5a4a2a",display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
           <span>현재: <b>{currentSoldiers}명</b></span>

@@ -173,10 +173,17 @@ const styles = `
   .stat-item-label{font-size:14px;color:var(--ink);font-weight:500}
 
   /* ── 주차 전환 ── */
-  .week-screen{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:#2b1d0f;position:relative;overflow:hidden}
-  .week-card{position:relative;z-index:2;width:100%;max-width:520px;background:rgba(20,14,6,0.9);border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:32px 28px;text-align:center;margin:0 20px}
-  .week-card-title{font-size:28px;font-weight:700;color:#e8c97a;margin-bottom:18px;letter-spacing:0.08em}
-  .week-card-text{font-size:14px;line-height:2.1;color:rgba(253,248,240,0.85);white-space:pre-line;margin-bottom:28px}
+  .week-screen{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+  .week-card{
+    position:relative;z-index:2;
+    width:58%;max-width:800px;
+    background:rgba(220,225,230,0.82);
+    border-radius:4px;
+    padding:48px 56px;
+    text-align:center;
+  }
+  .week-card-title{font-size:36px;font-weight:700;color:#1a1208;margin-bottom:28px;letter-spacing:0.06em}
+  .week-card-text{font-size:16px;line-height:2.2;color:#1a1208;white-space:pre-line;margin-bottom:32px}
 
   /* ── 채팅 공통 ── */
   .chat{width:100vw;height:100vh;overflow:hidden;display:flex;flex-direction:column}
@@ -548,12 +555,17 @@ function WeekTransitionScreen({ week, onNext }) {
   const info = WEEK_NARRATIVES[week];
   return (
     <div className="week-screen">
-      {/* ★ 주차 배경 이미지: IMAGES.weekBg 에 경로 입력하면 자동 적용 */}
-      {IMAGES.weekBg && <img src={IMAGES.weekBg} alt="배경" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>}
-      <div className="week-card fade" style={{zIndex:1}}>
-        <div className="week-card-title">─ {info.title} ─</div>
+      {/* 배경 이미지 전체화면 */}
+      {IMAGES.weekBg
+        ? <img src={IMAGES.weekBg} alt="배경"
+            style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>
+        : <div style={{position:"absolute",inset:0,background:"#2b1d0f",zIndex:0}}/>
+      }
+      {/* 반투명 카드 — 텍스트 바로 위에 표시 */}
+      <div className="week-card fade">
+        <div className="week-card-title">─{info.title}─</div>
         <div className="week-card-text">{info.text}</div>
-        <button className="btn-next" style={{width:"100%"}} onClick={onNext}>대화 시작하기</button>
+        <button className="btn-next" style={{width:"160px"}} onClick={onNext}>대화 시작하기</button>
       </div>
     </div>
   );

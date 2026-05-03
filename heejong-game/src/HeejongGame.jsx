@@ -103,12 +103,12 @@ function getEndingImage(key) {
 const styles = `
   @font-face {
     font-family: 'ShillaCulture';
-    src: url('/assets/fonts/Shilla_Culture_M_.ttf') format('truetype');
+    src: url('/assets/fonts/Shilla_Culture(M).ttf') format('truetype');
     font-weight: 400;
   }
   @font-face {
     font-family: 'ShillaCulture';
-    src: url('/assets/fonts/Shilla_Culture_B_.ttf') format('truetype');
+    src: url('/assets/fonts/Shilla_Culture(B).ttf') format('truetype');
     font-weight: 700;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}

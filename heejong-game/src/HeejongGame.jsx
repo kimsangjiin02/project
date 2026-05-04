@@ -79,7 +79,7 @@ const IMAGES = {
   endingEvil:     "/assets/images/ending_evil.png",
 };
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 // 호감도에 따른 희종 이미지 선택 함수
 function getHeejongImage(affection) {

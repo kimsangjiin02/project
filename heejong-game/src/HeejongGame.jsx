@@ -1,3 +1,5 @@
+
+
 import { useState, useEffect, useRef } from "react";
 
 // ============================================================
@@ -53,6 +55,8 @@ const FACTION_HINTS = {
   "죽":{keyword:"대나무",personalityHint:"죽림 쪽 가문은... 왠지 어릴 때부터 냉랭했소. 지금은 어떨지 모르겠소만.",flowerHint:"매화, 난초, 국화... 그 쪽은 의리가 있다 들었소. 대나무는, 글쎄, 겉만 곧고 속은 비어있다 하더이다."},
 };
 
+const API = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
 // ============================================================
 // 이미지 경로 설정 — 나중에 이 부분만 바꾸면 됩니다!
 // src/assets/ 폴더에 파일 넣고 경로 수정
@@ -78,8 +82,6 @@ const IMAGES = {
   endingDeath:    "/assets/images/ending_death.png",
   endingEvil:     "/assets/images/ending_evil.png",
 };
-
-const API = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 // 호감도에 따른 희종 이미지 선택 함수
 function getHeejongImage(affection) {
@@ -383,64 +385,29 @@ const styles = `
 // ============================================================
 // 백엔드 연동
 // ============================================================
-// async function callClaude(messages, system) {
-//   try {
-//     const r = await fetch("https://api.anthropic.com/v1/messages", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 800, system, messages }),
-//     });
-//     const d = await r.json();
-//     return d.content?.[0]?.text || "";
-//   } catch {
-//     return '{"dialog":"잠시 후 다시 시도해주세요.","affectionChange":0,"hpChange":0}';
-//   }
-// }
-async function callClaude(messages, system) {
-  try {
-    // Anthropic 직접 X → 백엔드 통해서
-    const lastMessage = messages[messages.length - 1]?.content || "";
-    const r = await fetch("http://localhost:8000/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: lastMessage })
-    });
-    const data = await r.json();
+async function callBackend(message) {
+ const r = await fetch(`${API}/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message })
+  });
+  const data = await r.json();
 
-    // 백엔드 응답을 프론트가 기대하는 형식으로 변환
-    if (system.includes("태황대군")) {
-      // 폭군 씬
-      return JSON.stringify({
-        dialog: data.대사,
-        hpChange: data.stats?.폭군심기변화 || 0,
-        reason: ""
-      });
-    } else {
-      // 희종 씬
-      return JSON.stringify({
-        dialog: data.대사,
-        affectionChange: data.stats?.호감도변화 || 0,
-        reason: ""
-      });
-    }
-  } catch {
-    return '{"dialog":"잠시 후 다시 시도해주세요.","affectionChange":0,"hpChange":0}';
+  if(data.대사) {
+    let 대사 = data.대사;
+    const braceIdx = 대사.indexOf('{"');
+    if(braceIdx > 0) 대사 = 대사.slice(0, braceIdx).trim();
+    data.대사 = 대사;
+  }
+
+  // 이미지 URL 생성
+  if(data.이미지파일) {
+    data.이미지URL = `${API}/images/${data.이미지파일}`;
   }
 
   return data;
 }
-async function callBackend(message){
-  const r=await fetch("http://localhost:8000/chat",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({message})
-  });
-  return await r.json();
-}
-async function getBackendState() {
-  const r = await fetch("http://localhost:8000/state");
-  return await r.json();
-}
+
 // ============================================================
 // 공통: 하단 이전/다음 버튼
 // ============================================================
@@ -631,38 +598,76 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
   const [showModal, setShowModal] = useState(false);
   const endRef = useRef(null);
 
-  // 폭군 씬 진입/종료 시 백엔드에 알림
-useEffect(() => {
-  if (isBoss) {
-    fetch("http://localhost:8000/tyrant/start", { method: "POST" });
-  }
-  return () => {
-    if (isBoss) {
-      fetch("http://localhost:8000/tyrant/end", { method: "POST" });
-    }
-  };
-}, [isBoss]);
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior:"smooth" }); }, [messages]);
+  useEffect(()=>{ endRef.current?.scrollIntoView({behavior:"smooth"}); },[messages]);
 
-  // ── 추천 답변 AI 갱신 (희종 답변 후 자동 호출) ──────────────
-  async function refreshRecAnswers(lastNpcText) {
-  if (isBoss) return;
-  setRecLoading(true);
-  try {
-    const r = await fetch("http://localhost:8000/recommend", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        week: week,
-        affection: stats.affection,
-        last_npc_text: lastNpcText
-      })
-    });
-    const data = await r.json();
-    if (Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
-  } catch {}
-  setRecLoading(false);
-}
+  useEffect(()=>{
+    if(isBoss) fetch(`${API}/tyrant/start`,{method:"POST"}).catch(()=>{});
+    return ()=>{ if(isBoss) fetch(`${API}/tyrant/end`,{method:"POST"}).catch(()=>{}); };
+  },[isBoss]);
+
+  const [currentCharImg, setCurrentCharImg] = useState(null); // 백엔드가 주는 이미지 URL
+  const charImg = isBoss
+    ? (IMAGES.tyrant || null)
+    : (currentCharImg || getHeejongImage(stats.affection)); // 백엔드 URL 우선, 없으면 호감도 기반
+  const npcName = isBoss ? "태황대군" : "희종";
+  const hpPct = (bossHp/30)*100;
+
+  async function handleBackendResponse(data, nc) {
+    // 대사만 추출 (JSON 형식이 그대로 노출되지 않도록)
+    let 대사 = data.대사 || "";
+    // 혹시 대사 안에 JSON 형식이 포함된 경우 제거
+    if(대사.includes('{"') || 대사.includes('"호감도변화"')) {
+      try {
+        const parsed = JSON.parse(대사);
+        대사 = parsed.대사 || 대사;
+      } catch {
+        // 파싱 실패면 중괄호 이전까지만 사용
+        const braceIdx = 대사.indexOf('{');
+        if(braceIdx > 0) 대사 = 대사.slice(0, braceIdx).trim();
+      }
+    }
+    setMessages(m=>[...m,{role:"npc",text:대사}]);
+    if(Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
+    setDialogCount(nc);
+    setLoading(false);
+
+    // ★ 백엔드가 이미지 URL을 주면 바로 적용
+    // 백엔드 응답에서 가능한 모든 이미지 URL 필드 탐색
+    if(!isBoss) {
+      const imgUrl = data.이미지URL
+        || data.image_url
+        || data.imageUrl
+        || data.character_image
+        || data.캐릭터이미지
+        || null;
+      if(imgUrl) {
+        // 상대경로면 백엔드 주소 붙이기
+        const fullUrl = imgUrl.startsWith("http") ? imgUrl : `${API}${imgUrl}`;
+        setCurrentCharImg(fullUrl);
+      } else {
+        // 백엔드 URL 없으면 호감도 기반 이미지로 fallback
+        setCurrentCharImg(null);
+      }
+    }
+
+    if(isBoss){
+      const delta = data.stats?.폭군심기변화||0;
+      const newHp = Math.max(0,Math.min(30,bossHp+delta));
+      setBossHp(newHp); setBossDelta(delta);
+      if(newHp<=0){ setTimeout(()=>onDialogComplete("bossKill"),1500); return;}
+      if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("bossSurvive"),1500); return;}
+    } else {
+      const affDelta = data.stats?.호감도변화||0;
+      setAffDelta(affDelta);
+      onStatsChange({affection:affDelta});
+      // ★ 베드엔딩: 백엔드 bad_ending 무시하고 호감도 수치로만 판단
+      // 호감도가 -20 이하로 내려갔을 때만 베드엔딩 (한두 번 실수는 괜찮음)
+      // stats.affection은 아직 업데이트 전이라 delta 더해서 계산
+      const newAff = stats.affection + affDelta;
+      if(newAff <= -20){ setTimeout(()=>onDialogComplete("badAffection"),1500); return;}
+      if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("complete"),1500); return;}
+    }
+  }
 
   async function sendMessage(text) {
     if(!text.trim()||loading) return;
@@ -675,67 +680,80 @@ useEffect(() => {
     } catch { setLoading(false); }
   }
 
-  // ── 추천 답변 클릭: +3 고정, API 없이 즉시 처리 ─────────────
- async function sendRecommended(text) {
-  if (loading || recLoading) return;
-  setLoading(true);
-  setMessages(m => [...m, { role:"user", text }]);
+  // 추천 답변: 백엔드 호출하되 호감도 변화는 프론트에서 강제 고정
+  // 백엔드 응답의 호감도변화 값은 무시하고 +3 고정 적용
+  const NPC_REC_REPLIES = [
+    "...그렇군요. 오랜만이오.",
+    "수고가 많으십니다, 숙부님.",
+    "...고맙소. 그런 말을 들으니 조금 마음이 편해지는 것 같소.",
+    "흠... 그런 생각을 해주시다니.",
+    "...잘 오셨소. 사실 이야기 나눌 사람이 필요했소.",
+    "그리 말씀해 주시니... 감사하오.",
+  ];
+  const BOSS_REC_REPLIES = [
+    "...그래. 그 정도면 봐주지.",
+    "흠, 말이라도 그렇게 해야지.",
+    "...알겠다. 물러가거라.",
+  ];
 
-  // 백엔드 호출 (자유입력이랑 동일하게)
-  const data = await callBackend(text);
+  async function sendRecommended(text) {
+    if(loading||recLoading) return;
+    setLoading(true);
+    setMessages(m=>[...m,{role:"user",text}]);
 
-  setMessages(m => [...m, { role:"npc", text: data.대사 }]);
-  if (Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
+    // 백엔드 호출 시도 (대사와 추천답변 갱신 목적)
+    // 단, 호감도/심기 변화는 프론트에서 고정값 사용
+    try {
+      const data = await callBackend(text);
+      const npcText = data.대사 || (isBoss
+        ? BOSS_REC_REPLIES[Math.floor(Math.random()*BOSS_REC_REPLIES.length)]
+        : NPC_REC_REPLIES[Math.floor(Math.random()*NPC_REC_REPLIES.length)]);
 
-  const nc = dialogCount + 1;
-  setDialogCount(nc);
+      setMessages(m=>[...m,{role:"npc",text:npcText}]);
+      if(Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
 
-if (isBoss) {
-    const 심기변화 = data.stats?.폭군심기변화 || 0;
-    console.log("심기변화:", 심기변화, "현재bossHp:", bossHp);  // ← 추가
-    const newHp = Math.max(0, Math.min(30, bossHp + 심기변화));
-    setBossHp(newHp);
-    setBossDelta(심기변화);
-  setLoading(false);
-  if (newHp <= 0) { onDialogComplete("bossKill"); return; }
-  if (nc >= maxDialog) { onDialogComplete("bossSurvive"); return; }
-}else {
-    onStatsChange({ affection: data.stats?.호감도변화 || 3 });
-    setLoading(false);
-    if (data.bad_ending) { onDialogComplete("badAffection"); return; }
-    if (nc >= maxDialog) { onDialogComplete("complete"); return; }
+      // 이미지 업데이트
+      if(!isBoss){
+        const imgUrl = data.이미지URL || data.image_url || null;
+        if(imgUrl) setCurrentCharImg(imgUrl);
+      }
+
+      const nc = dialogCount+1;
+      setDialogCount(nc);
+
+      if(isBoss){
+        // 보스: 추천 답변 → 심기 +5 고정
+        const newHp = Math.min(30, bossHp+5);
+        setBossHp(newHp); setBossDelta(5);
+        setLoading(false);
+        if(newHp<=0){ setTimeout(()=>onDialogComplete("bossKill"),1500); return;}
+        if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("bossSurvive"),1500); return;}
+      } else {
+        // 일반: 추천 답변 → 호감도 +3 고정 (절대 마이너스 없음)
+        setAffDelta(3);
+        onStatsChange({affection:3});
+        setLoading(false);
+        if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("complete"),1500); return;}
+      }
+    } catch {
+      // 백엔드 오류시 기본 대사로
+      const npcText = isBoss
+        ? BOSS_REC_REPLIES[Math.floor(Math.random()*BOSS_REC_REPLIES.length)]
+        : NPC_REC_REPLIES[Math.floor(Math.random()*NPC_REC_REPLIES.length)];
+      setMessages(m=>[...m,{role:"npc",text:npcText}]);
+      const nc = dialogCount+1;
+      setDialogCount(nc);
+      if(isBoss){
+        const newHp = Math.min(30,bossHp+5);
+        setBossHp(newHp); setBossDelta(5);
+      } else {
+        setAffDelta(3);
+        onStatsChange({affection:3});
+      }
+      setLoading(false);
+      if(nc>=maxDialog){ setTimeout(()=>onDialogComplete(isBoss?"bossSurvive":"complete"),1500); return;}
+    }
   }
-}
-
-  // 백엔드 연동 ────────────────────────────
-async function sendMessage(text) {
-  if (!text.trim() || loading) return;
-  setLoading(true);
-  setMessages(m => [...m, { role:"user", text }]);
-  setInput("");
-
-  const data = await callBackend(text);
-  setMessages(m => [...m, { role:"npc", text: data.대사 }]);
-  if (Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
-
-  const nc = dialogCount + 1;
-  setDialogCount(nc);
-
-  if (isBoss) {
-    const 심기변화 = data.stats?.폭군심기변화 || 0;
-    const newHp = Math.max(0, Math.min(30, bossHp + 심기변화));
-    setBossHp(newHp);
-    setBossDelta(심기변화);
-    setLoading(false);
-    if (newHp <= 0) { onDialogComplete("bossKill"); return; }
-    if (nc >= maxDialog) { onDialogComplete("bossSurvive"); return; }
-  } else {
-    onStatsChange({ affection: data.stats?.호감도변화 || 0 });
-    setLoading(false);
-    if (data.bad_ending === "호감도_0_엔딩") { onDialogComplete("badAffection"); return; }
-    if (nc >= maxDialog) { onDialogComplete("complete"); return; }
-  }
-}
 
   return (
     <div className={`chat${isBoss?" boss":""}`}>
@@ -946,22 +964,23 @@ async function sendMessage(text) {
 // 미니게임: 협력 세력
 // ============================================================
 function MiniAlly({ onResult, badFaction="죽" }) {
-  const OPTIONS = ["매","난","국","죽"];
-  const [selected, setSelected] = useState(null);
-  const [revealed, setRevealed] = useState(false);
-  const [miniSuccess, setMiniSuccess] = useState(null); // ← 추가
+  const OPTIONS=["매","난","국","죽"];
+  const [selected,setSelected]=useState(null);
+  const [revealed,setRevealed]=useState(false);
+  const [success,setSuccess]=useState(null);
 
-  async function choose(opt) {
-    setSelected(opt);
-    setRevealed(true);
-    const r = await fetch("http://localhost:8000/minigame", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "협력세력_1차", choice: opt })
-    });
-    const data = await r.json();
-    setMiniSuccess(data.success); // ← 저장
-    setTimeout(() => onResult(data.success ? "allyOk" : "evil"), 1400);
+  async function choose(opt){
+    setSelected(opt);setRevealed(true);
+    try{
+      const r=await fetch(`${API}/minigame`,{method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({type:"협력세력_1차",choice:opt})});
+      const data=await r.json();
+      setSuccess(data.success);
+      setTimeout(()=>onResult(data.success?"allyOk":"evil"),1400);
+    } catch {
+      setTimeout(()=>onResult(opt===badFaction?"evil":"allyOk"),1400);
+    }
   }
 
   return (
@@ -973,15 +992,15 @@ function MiniAlly({ onResult, badFaction="죽" }) {
         <div className="mopts">
           {OPTIONS.map(opt=>(
             <button key={opt}
-              className={`mbtn${revealed && opt===selected ? (miniSuccess ? " sel" : " wrong") : ""}`}
-              onClick={() => !revealed && choose(opt)} disabled={revealed}>
+              className={`mbtn${revealed&&opt===selected?(success===null?"":(success?" sel":" wrong")):""}` }
+              onClick={()=>!revealed&&choose(opt)} disabled={revealed}>
               '{opt}' 세력
             </button>
           ))}
         </div>
-        {revealed && miniSuccess !== null && (
-          <p style={{marginTop:14,fontSize:13,fontWeight:700,color:miniSuccess?"#2e7d32":"#c62828"}}>
-            {miniSuccess ? " 현명한 선택입니다!" : "❌ 반(反)희종 세력이었습니다!"}
+        {revealed&&success!==null&&(
+          <p style={{marginTop:14,fontSize:13,fontWeight:700,color:success?"#2e7d32":"#c62828"}}>
+            {success?"✅ 현명한 선택입니다!":"❌ 반(反)희종 세력이었습니다!"}
           </p>
         )}
       </div>
@@ -989,22 +1008,24 @@ function MiniAlly({ onResult, badFaction="죽" }) {
   );
 }
 function MiniLetter({ onResult }) {
-  const OPTIONS = ["A","B","C","D"];
-  const [selected, setSelected] = useState(null);
-  const [revealed, setRevealed] = useState(false);
-  const [success, setSuccess] = useState(null);
+  const OPTIONS=["A","B","C","D"];
+  const [selected,setSelected]=useState(null);
+  const [revealed,setRevealed]=useState(false);
+  const [success,setSuccess]=useState(null);
 
-  async function choose(opt) {
-    setSelected(opt);
-    setRevealed(true);
-    const r = await fetch("http://localhost:8000/minigame", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "비밀서신", choice: opt })
-    });
-    const data = await r.json();
-    setSuccess(data.success);
-    setTimeout(() => onResult(data.success ? "letterOk" : "userDeath"), 1400);
+  async function choose(opt){
+    setSelected(opt);setRevealed(true);
+    try{
+      const r=await fetch(`${API}/minigame`,{method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({type:"비밀서신",choice:opt})});
+      const data=await r.json();
+      setSuccess(data.success);
+      setTimeout(()=>onResult(data.success?"letterOk":"userDeath"),1400);
+    } catch {
+      const fallbackBad=OPTIONS[Math.floor(Math.random()*OPTIONS.length)];
+      setTimeout(()=>onResult(opt===fallbackBad?"userDeath":"letterOk"),1400);
+    }
   }
 
   return (
@@ -1016,15 +1037,17 @@ function MiniLetter({ onResult }) {
         <div className="mopts">
           {OPTIONS.map(opt=>(
             <button key={opt}
-              className={`mbtn${revealed?(opt===selected?(success?" sel":" wrong"):""): ""}`}
-              onClick={() => !revealed && choose(opt)} disabled={revealed}>
+              className={`mbtn${revealed&&opt===selected?(success===null?"":(success?" sel":" wrong")):""}`}
+              onClick={()=>!revealed&&choose(opt)} disabled={revealed}>
               {opt}
             </button>
           ))}
         </div>
-        {revealed && <p style={{marginTop:14,fontSize:13,fontWeight:700,color:success?"#2e7d32":"#c62828"}}>
-          {success ? " 서신을 안전하게 전달했습니다!" : "❌ 심복이 매복한 길이었습니다!"}
-        </p>}
+        {revealed&&success!==null&&(
+          <p style={{marginTop:14,fontSize:13,fontWeight:700,color:success?"#2e7d32":"#c62828"}}>
+            {success?"✅ 서신을 안전하게 전달했습니다!":"❌ 심복이 매복한 길이었습니다!"}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -1046,30 +1069,23 @@ function getSoldierConfig(week){
 }
 
 function MiniSoldier({ week, currentSoldiers, onResult }) {
-  const [input, setInput] = useState("");
-  const [error, setError] = useState("");
-  const [cfg] = useState(() => getSoldierConfig(week));
-  const needed = Math.max(0, 1000-currentSoldiers);
+  const [input,setInput]=useState("");
+  const [error,setError]=useState("");
+  const [cfg]=useState(()=>getSoldierConfig(week));
+  const needed=Math.max(0,1000-currentSoldiers);
 
-  async function submit() {
-    const n = parseInt(input);
-    if (isNaN(n) || n < cfg.min || n > cfg.max) {
-      setError(`${cfg.min}~${cfg.max} 사이 숫자를 입력해주세요.`);
-      return;
-    }
-    const roundKey = week <= 3 ? "사병키우기_1차" 
-               : week <= 6 ? "사병키우기_2차" 
-               : "사병키우기_3차";
-    const r = await fetch("http://localhost:8000/minigame", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: roundKey, choice: String(n) })
-    });
-    const data = await r.json();
-    if (data.success) {
-      onResult("soldierOk", n);
-    } else {
-      onResult("soldierCaught");
+  async function submit(){
+    const n=parseInt(input);
+    if(isNaN(n)||n<cfg.min||n>cfg.max){setError(`${cfg.min}~${cfg.max} 사이 숫자를 입력해주세요.`);return;}
+    const roundKey=week<=3?"사병키우기_1차":week<=6?"사병키우기_2차":"사병키우기_3차";
+    try{
+      const r=await fetch(`${API}/minigame`,{method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({type:roundKey,choice:String(n)})});
+      const data=await r.json();
+      if(data.success) onResult("soldierOk",n); else onResult("soldierCaught");
+    } catch {
+      if(n>cfg.safeMax) onResult("soldierCaught"); else onResult("soldierOk",n);
     }
   }
 
@@ -1081,13 +1097,16 @@ function MiniSoldier({ week, currentSoldiers, onResult }) {
         <p className="mdesc">복위를 위한 필수 단계인 사병 모으기입니다.<br/>태황대군의 단속을 피해 세 차례에 걸쳐 최소 <b>1,000명</b>의 사병을 모아야 합니다.<br/>이번에는 몇 명의 사병을 모집할까요?</p>
         <p className="mred">*지금은 사병 단속이 <b>{cfg.label}</b> 기간입니다.</p>
         <p style={{fontSize:12,color:"#7a5a2a",marginBottom:4,fontStyle:"italic"}}>"{cfg.hint}"</p>
-        <p style={{fontSize:12,color:"#5a4a2a",marginBottom:14}}>입력 범위: {cfg.min}~{cfg.max}명 / 단속 강도에 따라 발각 위험 있음</p>
-        <input className="minp" type="number" min={cfg.min} max={cfg.max}
-          placeholder={`${cfg.min}~${cfg.max}`} value={input}
-          onChange={e=>{setInput(e.target.value);setError("");}}
-          onKeyDown={e=>e.key==="Enter"&&submit()} />
-        <button className="msub" onClick={submit}>확인</button>
-        {error && <p style={{color:"#c62828",marginTop:8,fontSize:12}}>{error}</p>}
+        <p style={{fontSize:12,color:"#5a4a2a",marginBottom:14}}>입력 범위: {cfg.min}~{cfg.max}명</p>
+        <div style={{display:"flex",gap:8,justifyContent:"center",alignItems:"center",marginTop:8}}>
+          <input className="minp" type="number" min={cfg.min} max={cfg.max}
+            placeholder={`${cfg.min}~${cfg.max}`} value={input}
+            style={{width:"70%",marginBottom:0}}
+            onChange={e=>{setInput(e.target.value);setError("");}}
+            onKeyDown={e=>e.key==="Enter"&&submit()}/>
+          <button className="msub" onClick={submit} style={{width:"20%",padding:"12px 0",margin:0}}>확인</button>
+        </div>
+        {error&&<p style={{color:"#c62828",marginTop:8,fontSize:12}}>{error}</p>}
         <div style={{marginTop:12,fontSize:12,color:"#5a4a2a",display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
           <span>현재: <b>{currentSoldiers}명</b></span>
           <span>목표까지: <b style={{color:needed>0?"#c62828":"#2e7d32"}}>{needed>0?`${needed}명 부족`:"달성!"}</b></span>

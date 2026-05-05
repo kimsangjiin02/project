@@ -1,3 +1,5 @@
+
+
 import { useState, useEffect, useRef } from "react";
 
 // ============================================================
@@ -54,6 +56,8 @@ const FACTION_HINTS = {
   "죽":{keyword:"대나무",personalityHint:"죽림 쪽 가문은... 왠지 어릴 때부터 냉랭했소. 지금은 어떨지 모르겠소만.",flowerHint:"매화, 난초, 국화... 그 쪽은 의리가 있다 들었소. 대나무는, 글쎄, 겉만 곧고 속은 비어있다 하더이다."},
 };
 
+const API = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
 // ============================================================
 // 이미지 경로 설정 — 나중에 이 부분만 바꾸면 됩니다!
 // src/assets/ 폴더에 파일 넣고 경로 수정
@@ -100,19 +104,22 @@ const IMAGES = {
   endingPoison:   "/assets/images/ending_poison.png",    // 사약 엔딩
 };
 
-// 호감도에 따라 희종 이미지 선택
+// 호감도에 따른 희종 이미지 선택 함수
 function getHeejongImage(affection) {
   if (affection >= 70 && IMAGES.heejongHigh) return IMAGES.heejongHigh;
   if (affection >= 30 && IMAGES.heejongMid) return IMAGES.heejongMid;
   return IMAGES.heejongLow;
 }
 
+<<<<<<< HEAD
 // 태황대군: 심기에 따라 이미지 선택 (0~30 분노, 31~60 평상, 61~100 기분좋음)
 function getTyrantImage(hp) {
   if (hp <= 30 && IMAGES.tyrantAngry) return IMAGES.tyrantAngry;
   if (hp <= 60 && IMAGES.tyrantNormal) return IMAGES.tyrantNormal;
   return IMAGES.tyrantHappy;
 }
+=======
+>>>>>>> dbbca22cd1fea1841b75cdc60452e4e32949a80a
 
 // 엔딩 키에 따라 이미지 선택
 function getEndingImage(key) {
@@ -429,24 +436,23 @@ const styles = `
 // 백엔드 연동
 // ============================================================
 async function callBackend(message) {
-  const r = await fetch("http://localhost:8000/chat", {
+ const r = await fetch(`${API}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message })
   });
   const data = await r.json();
 
-  // 대사 필드 정리: JSON이 대사 안에 섞여 있으면 제거
   if(data.대사) {
     let 대사 = data.대사;
-    // 대사 안에 JSON 패턴이 있으면 앞부분만 사용
     const braceIdx = 대사.indexOf('{"');
-    if(braceIdx > 0) {
-      대사 = 대사.slice(0, braceIdx).trim();
-    }
-    // 따옴표로 끝나는 패턴 제거
-    대사 = 대사.replace(/",\s*$/, '').replace(/"\s*$/, '').trim();
+    if(braceIdx > 0) 대사 = 대사.slice(0, braceIdx).trim();
     data.대사 = 대사;
+  }
+
+  // 이미지 URL 생성
+  if(data.이미지파일) {
+    data.이미지URL = `${API}/images/${data.이미지파일}`;
   }
 
   return data;
@@ -706,8 +712,8 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
   useEffect(()=>{ endRef.current?.scrollIntoView({behavior:"smooth"}); },[messages]);
 
   useEffect(()=>{
-    if(isBoss) fetch("http://localhost:8000/tyrant/start",{method:"POST"}).catch(()=>{});
-    return ()=>{ if(isBoss) fetch("http://localhost:8000/tyrant/end",{method:"POST"}).catch(()=>{}); };
+    if(isBoss) fetch(`${API}/tyrant/start`,{method:"POST"}).catch(()=>{});
+    return ()=>{ if(isBoss) fetch(`${API}/tyrant/end`,{method:"POST"}).catch(()=>{}); };
   },[isBoss]);
 
   const [currentCharImg, setCurrentCharImg] = useState(null); // 백엔드가 주는 이미지 URL
@@ -760,7 +766,7 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
         || null;
       if(imgUrl) {
         // 상대경로면 백엔드 주소 붙이기
-        const fullUrl = imgUrl.startsWith("http") ? imgUrl : `http://localhost:8000${imgUrl}`;
+        const fullUrl = imgUrl.startsWith("http") ? imgUrl : `${API}${imgUrl}`;
         setCurrentCharImg(fullUrl);
       } else {
         // 백엔드 URL 없으면 호감도 기반 이미지로 fallback
@@ -1095,7 +1101,7 @@ function MiniAlly({ onResult, badFaction="죽" }) {
   async function choose(opt){
     setSelected(opt);setRevealed(true);
     try{
-      const r=await fetch("http://localhost:8000/minigame",{method:"POST",
+      const r=await fetch(`${API}/minigame`,{method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({type:"협력세력_1차",choice:opt})});
       const data=await r.json();
@@ -1130,10 +1136,6 @@ function MiniAlly({ onResult, badFaction="죽" }) {
     </div>
   );
 }
-
-// ============================================================
-// 미니게임: 비밀 서신
-// ============================================================
 function MiniLetter({ onResult }) {
   const OPTIONS=["A","B","C","D"];
   const [selected,setSelected]=useState(null);
@@ -1143,7 +1145,7 @@ function MiniLetter({ onResult }) {
   async function choose(opt){
     setSelected(opt);setRevealed(true);
     try{
-      const r=await fetch("http://localhost:8000/minigame",{method:"POST",
+      const r=await fetch(`${API}/minigame`,{method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({type:"비밀서신",choice:opt})});
       const data=await r.json();
@@ -1206,7 +1208,7 @@ function MiniSoldier({ week, currentSoldiers, onResult }) {
     if(isNaN(n)||n<cfg.min||n>cfg.max){setError(`${cfg.min}~${cfg.max} 사이 숫자를 입력해주세요.`);return;}
     const roundKey=week<=3?"사병키우기_1차":week<=6?"사병키우기_2차":"사병키우기_3차";
     try{
-      const r=await fetch("http://localhost:8000/minigame",{method:"POST",
+      const r=await fetch(`${API}/minigame`,{method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({type:roundKey,choice:String(n)})});
       const data=await r.json();

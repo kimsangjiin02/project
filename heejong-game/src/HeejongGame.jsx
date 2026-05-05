@@ -43,6 +43,7 @@ const ENDINGS = {
   deathBoss:{title:"폭군의 칼에 사망 엔딩",text:"당신은 태황대군과의 대화에서 그의 심기를 거슬렸습니다. 분노한 태황대군은 바로 옆의 칼을 집어들어 한치의 망설임 없이 당신의 목을 베었습니다."},
   userDeath:{title:"사용자&희종 사망 엔딩",text:"당신이 선택한 길에는 태황대군의 심복이 잠복 중이었습니다.\n\n서신이 태황대군에게 전달되었고, 태황대군은 당신과 희종에게 사약을 내렸습니다."},
   badAffection:{title:"베드 엔딩",text:"희종의 마음이 완전히 닫혔습니다. 더 이상 대화를 나눌 수 없습니다..."},
+  poison:{title:"사약 엔딩",text:"태황대군은 당신의 행동이 수상하다는 것을 눈치채고 있었습니다.\n\n결국 당신에게 사약을 내렸습니다. 희종을 복위시키려던 모든 계획은 물거품이 되었습니다."},
 };
 
 const ALL_FACTIONS = ["매","난","국","죽"];
@@ -58,8 +59,13 @@ const FACTION_HINTS = {
 // src/assets/ 폴더에 파일 넣고 경로 수정
 // ============================================================
 const IMAGES = {
-  prologue:       "/assets/images/prologue.png",
-  playerAvatar:   null,
+  // 프롤로그: 3장 (각 페이지별 배경 이미지, 글 없이 이미지만)
+  prologue1:      "/assets/images/prologue1.png",
+  prologue2:      "/assets/images/prologue2.png",
+  prologue3:      "/assets/images/prologue3.png",
+  prologue4:      "/assets/images/prologue4.png",
+
+  playerAvatar:   "/assets/images/player_avatar.png",
   phoenix:        "/assets/images/phoenix.png",
   statAffection:  "/assets/images/stat_affection.png",
   statSoldier:    "/assets/images/stat_soldier.png",
@@ -68,15 +74,30 @@ const IMAGES = {
   heejongLow:     "/assets/images/heejong_low.png",
   heejongMid:     "/assets/images/heejong_mid.png",
   heejongHigh:    "/assets/images/heejong_high.png",
-  tyrant:         "/assets/images/tyrant.png",
-  miniBg:         "/assets/images/mini_board.png",
-  miniBgSoldier:  "/assets/images/mini_soldier.png",
+
+  // 태황대군: 심기 구간별 이미지 (0~30, 31~60, 61~100)
+  tyrantAngry:    "/assets/images/tyrant_angry.png",   // 심기 0~30 (분노)
+  tyrantNormal:   "/assets/images/tyrant_normal.png",  // 심기 31~60 (평상)
+  tyrantHappy:    "/assets/images/tyrant_happy.png",   // 심기 61~100 (기분좋음)
+
+  // 미니게임 배경 (각각 다른 이미지)
+  miniBgAlly:     "/assets/images/mini_ally.png",      // 협력세력 배경
+  miniBgLetter:   "/assets/images/mini_letter.png",    // 비밀서신 배경
+  miniBgSoldier:  "/assets/images/mini_soldier.png",   // 사병키우기 배경
+
   scrollBg:       "/assets/images/scroll.png",
   bossLeftBg:     "/assets/images/boss_left.png",
-  endingSuccess:  "/assets/images/ending_success.png",
-  endingFail:     "/assets/images/ending_fail.png",
-  endingDeath:    "/assets/images/ending_death.png",
-  endingEvil:     "/assets/images/ending_evil.png",
+
+  // 엔딩: 전체 배경 이미지 (이미지 자체에 글 포함)
+  endingSuccess:  "/assets/images/ending_success.png",   // 희종 복위 성공
+  endingFail:     "/assets/images/ending_fail.png",      // 희종 설득 실패
+  endingDeath:    "/assets/images/ending_death.png",     // 전장에서 죽음
+  endingEvil:     "/assets/images/ending_evil.png",      // 협력세력 선택 실패 (사악)
+  endingCaught:   "/assets/images/ending_caught.png",    // 사병 발각
+  endingBoss:     "/assets/images/ending_boss.png",      // 폭군의 칼
+  endingUserDead: "/assets/images/ending_userdead.png",  // 사용자&희종 사망
+  endingBad:      "/assets/images/ending_bad.png",       // 베드엔딩
+  endingPoison:   "/assets/images/ending_poison.png",    // 사약 엔딩
 };
 
 // 호감도에 따라 희종 이미지 선택
@@ -86,13 +107,25 @@ function getHeejongImage(affection) {
   return IMAGES.heejongLow;
 }
 
+// 태황대군: 심기에 따라 이미지 선택 (0~30 분노, 31~60 평상, 61~100 기분좋음)
+function getTyrantImage(hp) {
+  if (hp <= 30 && IMAGES.tyrantAngry) return IMAGES.tyrantAngry;
+  if (hp <= 60 && IMAGES.tyrantNormal) return IMAGES.tyrantNormal;
+  return IMAGES.tyrantHappy;
+}
+
 // 엔딩 키에 따라 이미지 선택
 function getEndingImage(key) {
   const map = {
-    success: IMAGES.endingSuccess,
-    deathBattle: IMAGES.endingDeath,
+    success:      IMAGES.endingSuccess,
+    deathBattle:  IMAGES.endingDeath,
     failPersuade: IMAGES.endingFail,
-    evil: IMAGES.endingEvil,
+    evil:         IMAGES.endingEvil,
+    soldierCaught:IMAGES.endingCaught,
+    deathBoss:    IMAGES.endingBoss,
+    userDeath:    IMAGES.endingUserDead,
+    badAffection: IMAGES.endingBad,
+    poison:       IMAGES.endingPoison,
   };
   return map[key] || null;
 }
@@ -151,12 +184,20 @@ const styles = `
   .dot.a{background:var(--gold)}
   .name-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:340px;padding:0 20px}
   .name-desc{font-size:14px;color:rgba(253,248,240,0.88);text-align:center;line-height:1.9}
-  .name-avatar-wrap{width:100px;height:100px;border-radius:50%;background:#3a2a1a;border:2px solid #6a5030;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .name-avatar-wrap{
+    width:130px;height:130px;border-radius:50%;
+    background:#3a2a1a;border:2px solid #6a5030;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
   .name-avatar-wrap img{width:100%;height:100%;object-fit:cover}
   .name-avatar-placeholder{font-size:36px;color:#6a5030}
   .name-row{display:flex;align-items:center;gap:8px;width:100%}
   .name-label{font-size:14px;color:rgba(253,248,240,0.8);white-space:nowrap;flex-shrink:0}
-  .name-input{flex:1;background:#2a1e10;border:1px solid #5a4020;border-radius:4px;padding:8px 12px;color:var(--white);font-size:14px;outline:none}
+  .name-input{
+    flex:1;background:#ffffff;border:1px solid #c8b48a;
+    border-radius:4px;padding:8px 12px;color:#2c1a0e;font-size:14px;outline:none;
+  }
+  .name-input::placeholder{color:#a09080}
   .name-input:focus{border-color:var(--gold)}
   .goal-wrap,.stat-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:480px;padding:0 24px}
   .goal-title,.stat-title{font-size:28px;font-weight:700;color:var(--white);letter-spacing:0.1em}
@@ -269,8 +310,10 @@ const styles = `
     /* PC 왼쪽 — 회색 배경 */
     .pcl{
       display:flex!important;flex-direction:column;align-items:center;
-      padding:16px 12px;gap:10px;overflow-y:auto;height:100vh;
+      padding:16px 12px;gap:10px;
+      height:100vh;
       background:var(--gray);border-right:1px solid #b8b4ac;
+      overflow:hidden;
     }
     /* 주차 뱃지 — 이미지처럼 한지색 배경 */
     .pcwk{
@@ -278,23 +321,28 @@ const styles = `
       background:rgba(245,234,214,0.9);border:1px solid #c0a870;
       border-radius:4px;padding:4px 12px;width:100%;text-align:left;
     }
-    /* 캐릭터 이미지 */
+    /* 캐릭터 이미지 — 절대 줄어들지 않도록 고정 */
     .pccharimg{
-      width:100%;height:280px;border:1px solid #b8a070;border-radius:4px;
+      width:100%;
+      height:300px;
+      min-height:300px;
+      max-height:300px;
+      flex-shrink:0;
+      flex-grow:0;
+      border:1px solid #b8a070;border-radius:4px;
       overflow:hidden;background:rgba(245,234,214,0.8);
       display:flex;align-items:center;justify-content:center;
       flex-direction:column;gap:6px;color:#8a7050;font-size:11px;text-align:center;
-      flex-shrink:0;
     }
     .pccharimg img{width:100%;height:100%;object-fit:cover;object-position:top}
-    .pccharimg-label{font-size:10px;color:#6a5030;padding:4px 8px;background:rgba(201,168,76,0.12);width:100%;text-align:center}
+    .pccharimg-label{font-size:10px;color:#6a5030;padding:4px 8px;background:rgba(201,168,76,0.12);width:100%;text-align:center;flex-shrink:0}
     /* 스탯 카드 3개 — 회색 배경 */
-    .pcsts{display:flex;gap:5px;width:100%}
+    .pcsts{display:flex;gap:5px;width:100%;flex-shrink:0}
     .pcst{flex:1;background:rgba(245,234,214,0.8);border:1px solid #c0a870;border-radius:4px;padding:6px 3px;text-align:center;min-width:0}
     .pcstn{font-size:9px;color:#6b5a3a;letter-spacing:0.02em;margin-bottom:1px}
     .pcstv{font-size:17px;font-weight:700;color:var(--ink);line-height:1.2}
     .pcst-sub{font-size:8px;color:#8a6030}
-    .pcdcnt{font-size:11px;color:#6a5838;text-align:center}
+    .pcdcnt{font-size:11px;color:#6a5838;text-align:center;flex-shrink:0}
 
     /* 보스 왼쪽 */
     .boss-pcl{display:flex!important;flex-direction:column;padding:0;overflow-y:auto;height:100vh;background:var(--paper)}
@@ -423,26 +471,61 @@ function BottomNav({ onPrev, onNext, nextLabel = "다음", nextDisabled = false 
 // ============================================================
 function PrologueScreen({ onNext }) {
   const [page, setPage] = useState(0);
+  const prologueImages = [IMAGES.prologue1, IMAGES.prologue2, IMAGES.prologue3, IMAGES.prologue4];
+  const currentBg = prologueImages[page];
+
   return (
-    <div className="page fade" key={page}>
-      <div className="prologue-wrap">
-        {/* ↓ 프롤로그 일러스트 이미지 교체 위치
-            IMAGES.prologue 에 경로 입력하거나 아래 img 태그 직접 수정
-            예: <img src="/assets/prologue_mountain.png" className="prologue-illust" /> */}
-        {IMAGES.prologue
-          ? <img src={IMAGES.prologue} className="prologue-illust" alt="프롤로그" />
-          : <div className="prologue-illust-placeholder">🏔️</div>
-        }
-        <p className="prologue-text">{PROLOGUE_PAGES[page]}</p>
-        <div className="prologue-dots">
-          {PROLOGUE_PAGES.map((_,i) => <div key={i} className={`dot${i===page?" a":""}`}/>)}
-        </div>
+    <div style={{
+      width:"100vw", height:"100vh", position:"relative",
+      overflow:"hidden", background:"#1a1208",
+    }}>
+      {/* 배경 이미지 전체화면 */}
+      {currentBg && (
+        <img src={currentBg} alt={`프롤로그 ${page+1}`}
+          style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>
+      )}
+      {/* 배경 어둡게 */}
+      <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.45)",zIndex:1}}/>
+
+      {/* 글 — 중앙 하단 */}
+      <div style={{
+        position:"absolute",left:0,right:0,bottom:"120px",zIndex:2,
+        display:"flex",justifyContent:"center",padding:"0 40px",
+      }}>
+        <p style={{
+          fontSize:16,lineHeight:2.1,
+          color:"rgba(253,248,240,0.95)",
+          textAlign:"center",maxWidth:680,
+          textShadow:"0 2px 8px rgba(0,0,0,0.8)",
+        }}>
+          {PROLOGUE_PAGES[page]}
+        </p>
       </div>
-      <div className="bottom-nav">
-        <button className="btn-prev" onClick={() => setPage(p=>p-1)}
-          style={{ visibility: page>0?"visible":"hidden" }}>이전</button>
+
+      {/* 페이지 점 */}
+      <div style={{
+        position:"absolute",left:0,right:0,bottom:"80px",zIndex:2,
+        display:"flex",justifyContent:"center",gap:8,
+      }}>
+        {PROLOGUE_PAGES.map((_,i)=>(
+          <div key={i} style={{
+            width:7,height:7,borderRadius:"50%",
+            background:i===page?"#c9a84c":"rgba(201,168,76,0.3)",
+            transition:"background 0.3s",
+          }}/>
+        ))}
+      </div>
+
+      {/* 이전/다음 버튼 */}
+      <div style={{
+        position:"absolute",bottom:0,left:0,right:0,zIndex:10,
+        display:"flex",justifyContent:"space-between",alignItems:"center",
+        padding:"20px 28px",
+      }}>
+        <button className="btn-prev" onClick={()=>setPage(p=>p-1)}
+          style={{visibility:page>0?"visible":"hidden"}}>이전</button>
         {page < PROLOGUE_PAGES.length-1
-          ? <button className="btn-next" onClick={() => setPage(p=>p+1)}>다음</button>
+          ? <button className="btn-next" onClick={()=>setPage(p=>p+1)}>다음</button>
           : <button className="btn-next" onClick={onNext}>다음</button>}
       </div>
     </div>
@@ -590,6 +673,32 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
   const [affDelta, setAffDelta] = useState(null);  // 호감도 변화 표시용
   const [recAnswers, setRecAnswers] = useState(INIT_RECS[week]||[]);
   const [recLoading, setRecLoading] = useState(false);
+
+  // 주차가 바뀌면 추천 답변 초기화
+  useEffect(()=>{ setRecAnswers(INIT_RECS[week]||[]); },[week]);
+
+  // 추천 답변 AI 갱신 함수 — /chat 응답의 추천답변 필드 사용
+  async function refreshRecAnswers(lastNpcText) {
+    if(isBoss) return;
+    setRecLoading(true);
+    try {
+      // /recommend 엔드포인트 직접 호출
+      const r = await fetch("http://localhost:8000/recommend", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({ week, affection:stats.affection, last_npc_text:lastNpcText })
+      });
+      const data = await r.json();
+      // 추천답변 필드명 여러 가지 탐색
+      const recs = data.추천답변 || data.recommendations || data.answers || null;
+      if(Array.isArray(recs) && recs.length > 0) {
+        setRecAnswers(recs);
+      }
+    } catch(e) {
+      console.log("recommend 오류:", e);
+    }
+    setRecLoading(false);
+  }
   const [narrOpen, setNarrOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const endRef = useRef(null);
@@ -608,6 +717,12 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
   const npcName = isBoss ? "태황대군" : "희종";
   const hpPct = (bossHp/30)*100;
 
+  const dialogCompleteRef = useRef(false);
+
+  useEffect(()=>{
+    dialogCompleteRef.current = false;
+  },[week]);
+
   async function handleBackendResponse(data, nc) {
     // 대사만 추출 (JSON 형식이 그대로 노출되지 않도록)
     let 대사 = data.대사 || "";
@@ -623,7 +738,14 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
       }
     }
     setMessages(m=>[...m,{role:"npc",text:대사}]);
-    if(Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
+    // 추천답변 업데이트 — /chat 응답에 포함된 경우 바로 사용
+    const newRecs = data.추천답변 || data.recommendations || null;
+    if(!isBoss && Array.isArray(newRecs) && newRecs.length > 0) {
+      setRecAnswers(newRecs);
+    } else if(!isBoss) {
+      // /chat에 추천답변 없으면 /recommend 별도 호출
+      refreshRecAnswers(대사);
+    }
     setDialogCount(nc);
     setLoading(false);
 
@@ -650,18 +772,17 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
       const delta = data.stats?.폭군심기변화||0;
       const newHp = Math.max(0,Math.min(30,bossHp+delta));
       setBossHp(newHp); setBossDelta(delta);
-      if(newHp<=0){ setTimeout(()=>onDialogComplete("bossKill"),1500); return;}
-      if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("bossSurvive"),1500); return;}
+      if(newHp<=0){ setTimeout(()=>{ if(!dialogCompleteRef.current){dialogCompleteRef.current=true; onDialogComplete("bossKill");} },1500); return;}
+      if(nc>=maxDialog){ setTimeout(()=>{ if(!dialogCompleteRef.current){dialogCompleteRef.current=true; onDialogComplete("bossSurvive");} },1500); return;}
     } else {
       const affDelta = data.stats?.호감도변화||0;
       setAffDelta(affDelta);
       onStatsChange({affection:affDelta});
-      // ★ 베드엔딩: 백엔드 bad_ending 무시하고 호감도 수치로만 판단
-      // 호감도가 -20 이하로 내려갔을 때만 베드엔딩 (한두 번 실수는 괜찮음)
-      // stats.affection은 아직 업데이트 전이라 delta 더해서 계산
       const newAff = stats.affection + affDelta;
-      if(newAff <= -20){ setTimeout(()=>onDialogComplete("badAffection"),1500); return;}
-      if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("complete"),1500); return;}
+      // 자유 입력 후 추천 답변 갱신
+      refreshRecAnswers(대사);
+      if(newAff <= -20){ setTimeout(()=>{ if(!dialogCompleteRef.current){dialogCompleteRef.current=true; onDialogComplete("badAffection");} },1500); return;}
+      if(nc>=maxDialog){ setTimeout(()=>{ if(!dialogCompleteRef.current){dialogCompleteRef.current=true; onDialogComplete("complete");} },1500); return;}
     }
   }
 
@@ -706,7 +827,13 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
         : NPC_REC_REPLIES[Math.floor(Math.random()*NPC_REC_REPLIES.length)]);
 
       setMessages(m=>[...m,{role:"npc",text:npcText}]);
-      if(Array.isArray(data.추천답변)) setRecAnswers(data.추천답변);
+      // 추천 답변 갱신: 백엔드 응답에 있으면 사용, 없으면 /recommend 호출
+      const newRecs = data.추천답변 || data.recommendations || null;
+      if(!isBoss && Array.isArray(newRecs) && newRecs.length > 0) {
+        setRecAnswers(newRecs);
+      } else if(!isBoss) {
+        refreshRecAnswers(npcText);
+      }
 
       // 이미지 업데이트
       if(!isBoss){
@@ -722,14 +849,14 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
         const newHp = Math.min(30, bossHp+5);
         setBossHp(newHp); setBossDelta(5);
         setLoading(false);
-        if(newHp<=0){ setTimeout(()=>onDialogComplete("bossKill"),1500); return;}
-        if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("bossSurvive"),1500); return;}
+        if(newHp<=0){ setTimeout(()=>{ if(!dialogCompleteRef.current){dialogCompleteRef.current=true; onDialogComplete("bossKill");} },1500); return;}
+        if(nc>=maxDialog){ setTimeout(()=>{ if(!dialogCompleteRef.current){dialogCompleteRef.current=true; onDialogComplete("bossSurvive");} },1500); return;}
       } else {
         // 일반: 추천 답변 → 호감도 +3 고정 (절대 마이너스 없음)
         setAffDelta(3);
         onStatsChange({affection:3});
         setLoading(false);
-        if(nc>=maxDialog){ setTimeout(()=>onDialogComplete("complete"),1500); return;}
+        if(nc>=maxDialog){ setTimeout(()=>{ if(!dialogCompleteRef.current){dialogCompleteRef.current=true; onDialogComplete("complete");} },1500); return;}
       }
     } catch {
       // 백엔드 오류시 기본 대사로
@@ -747,7 +874,7 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
         onStatsChange({affection:3});
       }
       setLoading(false);
-      if(nc>=maxDialog){ setTimeout(()=>onDialogComplete(isBoss?"bossSurvive":"complete"),1500); return;}
+      if(nc>=maxDialog){ setTimeout(()=>{ if(!dialogCompleteRef.current){dialogCompleteRef.current=true; onDialogComplete(isBoss?"bossSurvive":"complete");} },1500); return;}
     }
   }
 
@@ -981,8 +1108,8 @@ function MiniAlly({ onResult, badFaction="죽" }) {
 
   return (
     <div className="mini">
-      <div className="mboard" style={IMAGES.miniBg?{backgroundImage:`url(${IMAGES.miniBg})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:{}}>
-        {!IMAGES.miniBg && <div className="rope"/>}
+      <div className="mboard" style={IMAGES.miniBgAlly?{backgroundImage:`url(${IMAGES.miniBgAlly})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:{}}>
+        {!IMAGES.miniBgAlly && <div className="rope"/>}
         <div className="mtitle">협력 세력 고르기</div>
         <p className="mdesc">복위를 위해 협력 세력을 모을 차례입니다.<br/>다음 네 세력 중 한 세력을 제외하고 모두 복위에 우호적입니다.<br/>반(反)희종 세력을 피해 포섭할 하나의 협력 세력을 선택하세요.</p>
         <div className="mopts">
@@ -1030,8 +1157,8 @@ function MiniLetter({ onResult }) {
 
   return (
     <div className="mini">
-      <div className="mboard" style={IMAGES.miniBg?{backgroundImage:`url(${IMAGES.miniBg})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:{}}>
-        {!IMAGES.miniBg && <div className="rope"/>}
+      <div className="mboard" style={IMAGES.miniBgLetter?{backgroundImage:`url(${IMAGES.miniBgLetter})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:{}}>
+        {!IMAGES.miniBgLetter && <div className="rope"/>}
         <div className="mtitle">비밀 서신 전달하기</div>
         <p className="mdesc">희종의 복위 작전이 담긴 서신을 협력세력에게 전달해야 합니다.<br/>네 개의 길 중 한 개의 길에는 태황대군의 심복이 매복 중입니다.<br/>태황대군에게 발각되지 않을 길을 선택하여 서신을 전달해 주세요.</p>
         <div className="mopts">
@@ -1091,8 +1218,8 @@ function MiniSoldier({ week, currentSoldiers, onResult }) {
 
   return (
     <div className="mini">
-      <div className="mboard" style={IMAGES.miniBgSoldier?{backgroundImage:`url(${IMAGES.miniBgSoldier})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:IMAGES.miniBg?{backgroundImage:`url(${IMAGES.miniBg})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:{}}>
-        {!IMAGES.miniBg && !IMAGES.miniBgSoldier && <div className="rope"/>}
+      <div className="mboard" style={IMAGES.miniBgSoldier?{backgroundImage:`url(${IMAGES.miniBgSoldier})`,backgroundSize:"100% 100%",border:"none",borderRadius:6}:{}}>
+        {!IMAGES.miniBgSoldier && <div className="rope"/>}
         <div className="mtitle">사병 키우기</div>
         <p className="mdesc">복위를 위한 필수 단계인 사병 모으기입니다.<br/>태황대군의 단속을 피해 세 차례에 걸쳐 최소 <b>1,000명</b>의 사병을 모아야 합니다.<br/>이번에는 몇 명의 사병을 모집할까요?</p>
         <p className="mred">*지금은 사병 단속이 <b>{cfg.label}</b> 기간입니다.</p>
@@ -1124,27 +1251,30 @@ function EndingScreen({ endingKey, onRestart }) {
   const ending = ENDINGS[endingKey]||ENDINGS.failPersuade;
   const endImg = getEndingImage(endingKey);
   return (
-    <div className="ending fade">
-      <div className="etitle">{ending.title}</div>
-      <div className="eimg-wrap">
-        {/* ↓ 엔딩 이미지 교체 위치
-            IMAGES.endingSuccess / endingFail / endingDeath / endingEvil 에 경로 입력
-            엔딩 종류에 따라 자동으로 다른 이미지가 표시됩니다 */}
-        {endImg
-          ? <img src={endImg} alt="엔딩"/>
-          : <span style={{color:"rgba(201,168,76,0.4)",fontSize:11}}>(엔딩 이미지)</span>
-        }
+    <div style={{
+      width:"100vw",height:"100vh",position:"relative",
+      overflow:"hidden",background:"#1a1208",
+    }}>
+      {/* 엔딩 배경 이미지 전체화면 — 이미지 자체에 제목/글 포함 */}
+      {endImg
+        ? <img src={endImg} alt={ending.title}
+            style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>
+        : <div style={{
+            position:"absolute",inset:0,zIndex:0,
+            display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+            gap:20,padding:32,background:"#1a1208",
+          }}>
+            <div style={{fontSize:26,fontWeight:700,color:"#c9a84c"}}>{ending.title}</div>
+            <div style={{fontSize:14,lineHeight:2,color:"#fdf8f0",textAlign:"center",
+              whiteSpace:"pre-line",maxWidth:500}}>{ending.text}</div>
+          </div>
+      }
+      {/* 다시하기 버튼 — 우하단 */}
+      <div style={{
+        position:"absolute",bottom:32,right:32,zIndex:10,
+      }}>
+        <button className="btn-next" onClick={onRestart}>처음부터 다시하기</button>
       </div>
-      <div className="scroll-ending">
-        <div className="scroll-ending-poles">
-          <div className="scroll-pole-l"/>
-          <div className="scroll-body">{ending.text}</div>
-          <div className="scroll-pole-r"/>
-        </div>
-      </div>
-      <button className="btn-next" style={{maxWidth:280,width:"100%"}} onClick={onRestart}>
-        처음부터 다시하기
-      </button>
     </div>
   );
 }
@@ -1185,9 +1315,11 @@ export default function HeejongGame() {
       else triggerEnding("success");
       return;
     }
+    // week_transition 먼저 보여주고, 그 안에서 week+1로 이동
     updateStats({minsim:week===7?-60:-5});
     setWeek(w=>w+1);
-    setScreen("week_transition");
+    // setScreen을 약간 늦춰서 week state가 먼저 업데이트되도록
+    setTimeout(()=>setScreen("week_transition"), 0);
   }
   function handleMiniResult(result,value){
     if(result==="evil"){triggerEnding("evil");return;}
@@ -1206,7 +1338,7 @@ export default function HeejongGame() {
         {screen==="stat_intro"&&<StatIntroScreen onNext={()=>setScreen("name")} onPrev={()=>setScreen("goal")}/>}
         {screen==="name"&&<NameScreen onNext={name=>{setPlayerName(name);setScreen("week_transition");}}/>}
         {screen==="week_transition"&&<WeekTransitionScreen week={week} onNext={()=>setScreen("chat")}/>}
-        {screen==="chat"&&<ChatScreen week={week} playerName={playerName} stats={stats}
+        {screen==="chat"&&<ChatScreen key={week} week={week} playerName={playerName} stats={stats}
           onStatsChange={updateStats} onDialogComplete={handleDialogComplete}
           isBoss={week===5} badFaction={badFaction}/>}
         {screen==="mini_ally"&&<MiniAlly badFaction={badFaction} onResult={handleMiniResult}/>}

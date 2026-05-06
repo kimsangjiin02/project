@@ -1511,6 +1511,8 @@ const IMAGES = {
   miniBgLetter:     "/assets/images/mini_letters.png",
   miniBgSoldier:    "/assets/images/mini_soldiers.png",
   paper: "/assets/images/paper.png",
+  ropeOnly: "/assets/images/rope_only.png",
+  paperOnly: "/assets/images/paper_only.png",
 
   // 미니게임 결과 화면 배경
   miniResultAllyOk:      "/assets/images/mini_result_ally_ok.png",      // 협력세력 성공
@@ -1956,14 +1958,15 @@ const styles = `
     .boss-pcr-fill{height:100%;background:linear-gradient(90deg,#c62828,#ff5252);transition:width 0.4s}
   }
 .mini{
+  position:fixed;
+  inset:0;
   width:100vw;
   height:100vh;
-  position:relative;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:flex-start;
-  overflow:hidden;
+  overflow:visible;
   background:#1a1208;
 }
 
@@ -1973,42 +1976,63 @@ const styles = `
   width:100%;
   height:100%;
   object-fit:cover;
-  z-index:0;
+  z-index:-1;
 }
 
 .mini-inner{
   position:relative;
   z-index:1;
-  width:90%;
-  max-width:980px;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:20px;
-  margin-top:0;
+  width:100%;
+  height:100vh;
+  justify-content:center;
+  padding-top:6vw;
 }
+
+
 /* 한지 이미지 컨테이너 */
 .mboard{
-  width:100%;
-  background:transparent;
-  border-radius:0;
-  padding:70px 36px 38px;
-  text-align:center;
   position:relative;
+  width:100%;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  overflow:visible;
 }
 
 /* paper.png를 배경으로 */
+
 .mboard-paper{
   position:relative;
-  width:90%;
-  max-width:900px;
+  width:90vw;
+  max-width:90vw;
+  height:auto;
+  min-height:32vw;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  margin-top:0;
-  margin-bottom:0;
+  margin:0 auto;
   flex-shrink:0;
+  padding:clamp(30px,4vw,60px) clamp(40px,6vw,100px) clamp(50px,7vw,100px);
+  z-index:2;
+}
+.mboard-rope{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:1;
+  pointer-events:none;
+}
+
+.mboard-rope img{
+  width:100%;
+  height:auto;
+  display:block;
 }
 
 .mboard-paper-img{
@@ -2018,7 +2042,9 @@ const styles = `
   height:100%;
   object-fit:fill;
   z-index:0;
+  min-height:100%;
 }
+
 .mboard-content{
   position:relative;
   z-index:1;
@@ -2027,32 +2053,35 @@ const styles = `
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding:clamp(24px,6%,60px) clamp(16px,14%,130px) clamp(20px,8%,60px);
+  padding:0;
 }
+
 .mtitle{
-  font-size:clamp(22px, 3.5vw, 48px);
+  font-size:clamp(20px, 3vw, 44px);
   font-weight:800;
   color:#2c1a0e;
-  margin-bottom:clamp(8px,1.2vw,18px);
+  margin-bottom:clamp(8px,1.2vw,20px);
   margin-top:0;
   letter-spacing:0.06em;
   text-align:center;
 }
 
 .mdesc{
-  font-size:clamp(13px, 1.8vw, 26px);
-  line-height:1.75;
+  font-size:clamp(14px, 2vw, 28px);
+  line-height:1.9;
   color:#3a2a0e;
   margin-bottom:clamp(4px,0.6vw,10px);
   white-space:pre-line;
   word-break:keep-all;
+  word-wrap:break-word;
   text-align:center;
+  width:100%;
 }
 
 .mred{
   color:#c62828;
   font-weight:700;
-  font-size:clamp(11px, 1.3vw, 20px);
+  font-size:clamp(16px, 2vw, 30px);
   margin-top:clamp(4px,0.6vw,10px);
   text-align:center;
 }
@@ -2066,6 +2095,11 @@ const styles = `
   gap:10px 14px;
   padding:4px 0 12px;
   flex-shrink:0;
+  position:fixed;
+  bottom:clamp(16px,4vh,40px);
+  left:50%;
+  transform:translateX(-50%);
+  z-index:2;
 }
 .mbtn{
   background:rgba(240,235,225,0.92);
@@ -2093,6 +2127,11 @@ const styles = `
   width:min(80vw,500px);
   padding:4px 0 8px;
   flex-shrink:0;
+  position:fixed;
+  bottom:clamp(16px,4vh,40px);
+  left:50%;
+  transform:translateX(-50%);
+  z-index:2;
 }
 .minp{
   background:rgba(255,255,255,0.92);
@@ -2159,13 +2198,17 @@ position:fixed;
 }
 
 @media(min-width:768px) and (max-width:1200px){
-  .mboard-paper-img{ margin-top:-15vw; max-height:50vh; }
+  .mboard-paper{ width:95%; }
 }
 @media(max-width:767px){
-  .mboard-paper{ width:95%; }
-  .mboard-content{ padding:5% 8% 6%; }
+  .mboard-paper{ width:100vw; max-width:100vw; min-height:100vw; margin-left:calc(-2.5vw); }
+  .mboard-content{ padding:4vw 10% 20vw; }
+  .mdesc{ font-size:4vw; word-break:break-all;line-height:1.8; }
+  .mini-inner{ padding-top:25vw; justify-content:flex-start; }
+  .mtitle{ font-size:6vw; }
+  .mred{ font-size:4vw; }
   .mopts{ width:92vw; gap:8px 10px; }
-  .mbtn{ padding:14px 8px; font-size:15px; }
+  .mbtn{ padding:20px 8px; font-size:18px; }
   .mini-input-row{ width:90vw; }
   .mini-result-card{ width:90%; padding:28px 22px; }
   .mini-result-title{ font-size:20px; }
@@ -2408,6 +2451,8 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
   const [loading, setLoading] = useState(false);
   const [dialogCount, setDialogCount] = useState(0);
   const dialogCompleteRef = useRef(false);
+  const [waitingComplete, setWaitingComplete] = useState(false);
+  const [showStatModal, setShowStatModal] = useState(false);
   const [bossHp, setBossHp] = useState(20);
   const [bossDelta, setBossDelta] = useState(null);
   const [affDelta, setAffDelta] = useState(null);  // 호감도 변화 표시용
@@ -2416,6 +2461,7 @@ function ChatScreen({ week, playerName, stats, onStatsChange, onDialogComplete, 
   const [narrOpen, setNarrOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const endRef = useRef(null);
+  
 const [currentBossImg, setCurrentBossImg] = useState(IMAGES.tyrantNormal);
 
   useEffect(()=>{ endRef.current?.scrollIntoView({behavior:"smooth"}); },[messages]);
@@ -2526,6 +2572,7 @@ async function handleBackendResponse(data, nc) {
   }
 
   if (nc >= maxDialog) {
+    setWaitingComplete(true);
     setTimeout(() => {
       if (!dialogCompleteRef.current) {
         dialogCompleteRef.current = true;
@@ -2626,6 +2673,7 @@ if (nc >= maxDialog) {
         setLoading(false);
 
         if (nc >= maxDialog) {
+          setWaitingComplete(true);
           setTimeout(() => {
             if (!dialogCompleteRef.current) {
               dialogCompleteRef.current = true;
@@ -2774,12 +2822,14 @@ ${currentNarration.tip}`
           {loading&&<div className="msg npc"><div className="bub"><span className="spin"/></div></div>}
           <div ref={endRef}/>
         </div>
-        <div className="dcnt" style={isBoss?{background:"#280808",color:"#ff9090",fontSize:13,padding:"4px 0"}:{}}>{dialogCount} / {maxDialog} 대화</div>
+        <div className="dcnt" style={isBoss?{background:"#280808",color:"#ff9090",fontSize:13,padding:"4px 0"}:{}}>
+          {waitingComplete ? "다음 주차로 이동 중..." : `${dialogCount} / ${maxDialog} 대화`}
+        </div>
         <div className="inrow">
           <input className="ci" placeholder="답변을 입력하세요..." value={input}
             onChange={e=>setInput(e.target.value)}
-            onKeyDown={e=>e.key==="Enter"&&sendMessage(input)} disabled={loading}/>
-          <button className="sbtn" onClick={()=>sendMessage(input)} disabled={loading}>
+            onKeyDown={e=>e.key==="Enter"&&sendMessage(input)} disabled={loading||waitingComplete}/>
+          <button className="sbtn" onClick={()=>sendMessage(input)} disabled={loading||waitingComplete}>
             {loading?<span className="spin"/>:"➤"}
           </button>
         </div>
@@ -2792,7 +2842,7 @@ ${currentNarration.tip}`
             {recLoading&&<div className="recgen"><span className="spin"/>생성 중...</div>}
             {recAnswers.map((a,i)=>(
               <button key={i} className="rchip" onClick={()=>sendRecommended(a)}
-                disabled={loading||recLoading}>{a}</button>
+                disabled={loading||recLoading||waitingComplete}>{a}</button>
             ))}
           </div>
         </div>
@@ -2919,7 +2969,7 @@ ${currentNarration.tip}`
             {recLoading&&<div style={{fontSize:11,color:"#8a7050",padding:"4px 0"}}> 생성 중...</div>}
             {recAnswers.map((a,i)=>(
               <button key={i} className="pcrec-btn" onClick={()=>sendRecommended(a)}
-                disabled={loading||recLoading}>{a}</button>
+                disabled={loading||recLoading||waitingComplete}>{a}</button>
             ))}
           </div>
           </div>
@@ -2951,6 +3001,7 @@ ${currentNarration.tip}`
         </div>
       )}
 
+
       {/* 모바일 캐릭터 모달 */}
       {showModal&&(
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.75)",zIndex:100,
@@ -2961,7 +3012,6 @@ ${currentNarration.tip}`
             <div style={{width:150,height:190,background:"#d4c4a0",borderRadius:8,
               margin:"0 auto 12px",overflow:"hidden",display:"flex",
               alignItems:"center",justifyContent:"center",fontSize:12,color:"#8a7050"}}>
-              {/* ↓ 모바일 모달 캐릭터 이미지 */}
               {charImg
                 ? <img src={charImg} alt={npcName} style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top"}}/>
                 : "캐릭터 이미지"
@@ -2971,6 +3021,46 @@ ${currentNarration.tip}`
             {isBoss&&<div style={{fontSize:13,color:"#c62828"}}>심기: {bossHp}/30</div>}
             <button className="btn-prev" style={{marginTop:12,width:"100%"}} onClick={()=>setShowModal(false)}>닫기</button>
           </div>
+        </div>
+      )}
+
+      {/* 스탯 설명 모달 */}
+      {showStatModal&&!isBoss&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:200,
+          display:"flex",alignItems:"center",justifyContent:"center"}}
+          onClick={()=>setShowStatModal(false)}>
+          <div style={{background:"rgba(42,28,14,0.92)",borderRadius:12,padding:"28px 24px",
+            maxWidth:420,width:"90%",textAlign:"center",border:"1px solid #c9a84c"}}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:20,fontWeight:700,color:"#e8c97a",marginBottom:20,letterSpacing:"0.08em"}}>스탯 설명</div>
+            <div style={{display:"flex",justifyContent:"space-around",gap:12}}>
+              {[
+                {img:IMAGES.statAffection,fallback:"🤝",label:"호감도",goal:"목표: 90 이상",danger:"0 이하 → 베드엔딩"},
+                {img:IMAGES.statSoldier,fallback:"⚔️",label:"무력",goal:"목표: 1,000명 이상",danger:"부족 → 전장 사망"},
+                {img:IMAGES.statMinsim,fallback:"🏮",label:"민심",goal:"목표: 0 이상 유지",danger:"매주 감소"},
+              ].map(s=>(
+                <div key={s.label} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
+                  {s.img
+                    ? <img src={s.img} style={{width:60,height:60,objectFit:"contain"}} alt={s.label}/>
+                    : <div style={{fontSize:32}}>{s.fallback}</div>
+                  }
+                  <div style={{fontSize:13,fontWeight:700,color:"#e8c97a"}}>{s.label}</div>
+                  <div style={{fontSize:11,color:"#69f0ae"}}>{s.goal}</div>
+                  <div style={{fontSize:11,color:"#ff6b6b"}}>{s.danger}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{marginTop:16,fontSize:11,color:"rgba(253,248,240,0.5)"}}>화면을 누르면 닫힙니다</div>
+          </div>
+        </div>
+      )}
+
+      {/* 스탯 설명 다시 보기 버튼 */}
+      {!isBoss&&(
+        <div style={{position:"fixed",bottom:80,left:12,zIndex:100}}>
+          <button style={{background:"rgba(42,28,14,0.85)",color:"#e8c97a",border:"1px solid #c9a84c",
+            borderRadius:6,padding:"6px 12px",fontSize:11,cursor:"pointer",letterSpacing:"0.04em"}}
+            onClick={()=>setShowStatModal(true)}>스탯 설명 다시 보기</button>
         </div>
       )}
     </div>
@@ -2995,7 +3085,8 @@ function MiniAlly({ onResult, badFaction="죽", sessionId }) {
         body:JSON.stringify({type:"협력세력_1차",choice:opt,session_id:sessionId})});
       const data=await r.json();
       setSuccess(data.success);
-      setTimeout(()=>setShowResult(true),300);
+      if(data.success) setTimeout(()=>setShowResult(true),300);
+      else setTimeout(()=>onResult("evil"),800);
     } catch {
       alert("서버 연결 오류. 다시 시도해주세요.");
       setRevealed(false); setSelected(null);
@@ -3003,20 +3094,33 @@ function MiniAlly({ onResult, badFaction="죽", sessionId }) {
   }
 
   if(showResult) return (
-    <div className="mini-result">
-      {IMAGES.miniResultAllyOk && <img src={IMAGES.miniResultAllyOk} className="mini-result-bg" alt="결과"/>}
-      <button className="mini-result-btn" onClick={()=>onResult("allyOk")}>
-        채팅 계속하기
-      </button>
-    </div>
-  );
+  <div className="mini-result">
+    {success
+      ? IMAGES.miniResultAllyOk && <img src={IMAGES.miniResultAllyOk} className="mini-result-bg" alt="결과"/>
+      : IMAGES.miniResultAllyFail && <img src={IMAGES.miniResultAllyFail} className="mini-result-bg" alt="결과"/>
+    }
+    {!success && (
+      <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"28px 32px",textAlign:"center",maxWidth:400}}>
+        <div className="mini-result-title" style={{fontSize:22,fontWeight:700,color:"#c62828",marginBottom:12}}>
+          실패하셨습니다
+        </div>
+        <p className="mini-result-desc" style={{fontSize:14,lineHeight:1.9,color:"#2c1a0e",whiteSpace:"pre-line"}}>
+          {"반(反)희종 세력을 선택하고 말았습니다.\n\n이들은 태황대군에게 당신의 계획을 고하고\n당신에게 사약을 내렸습니다."}
+        </p>
+      </div>
+    )}
+    <button className="mini-result-btn" onClick={()=>onResult(success?"allyOk":"evil")}>
+      {success?"채팅 계속하기":"결과 확인"}
+    </button>
+  </div>
+);
 return (
   <div className="mini">
     {IMAGES.miniBgAlly && <img src={IMAGES.miniBgAlly} className="mini-bg" alt="배경"/>}
     <div className="mini-inner">
       <div className="mboard">
-        <div className="mboard-paper">
-          {IMAGES.paper && <img src={IMAGES.paper} className="mboard-paper-img" alt="한지"/>}
+        
+        <div className="mboard-paper" style={IMAGES.paperOnly ? {backgroundImage:`url(${IMAGES.paperOnly})`, backgroundSize:"100% 100%", backgroundRepeat:"no-repeat"} : {}}>
           <div className="mboard-content">
             <div className="mtitle">협력 세력 고르기</div>
             <p className="mdesc">복위를 위해 협력 세력을 모을 차례입니다.<br/>다음 네 세력 중 한 세력을 제외하고 모두 복위에 우호적입니다.<br/>반(反)희종 세력을 피해 포섭할 하나의 협력 세력을 선택하세요.</p>
@@ -3082,8 +3186,8 @@ return (
     {IMAGES.miniBgLetter && <img src={IMAGES.miniBgLetter} className="mini-bg" alt="배경"/>}
     <div className="mini-inner">
       <div className="mboard">
-        <div className="mboard-paper">
-          {IMAGES.paper && <img src={IMAGES.paper} className="mboard-paper-img" alt="한지"/>}
+        
+        <div className="mboard-paper" style={IMAGES.paperOnly ? {backgroundImage:`url(${IMAGES.paperOnly})`, backgroundSize:"100% 100%", backgroundRepeat:"no-repeat"} : {}}>
           <div className="mboard-content">
             <div className="mtitle">비밀 서신 전달하기</div>
             <p className="mdesc">{"희종의 복위 작전이 담긴 서신을 협력세력에게 전달해야 합니다.\n네 개의 길 중 한 개의 길에는 태황대군의 심복이 매복 중입니다.\n태황대군에게 발각되지 않을 길을 선택하여 서신을 전달해 주세요."}</p>
@@ -3168,8 +3272,8 @@ return (
     {IMAGES.miniBgSoldier && <img src={IMAGES.miniBgSoldier} className="mini-bg" alt="배경"/>}
     <div className="mini-inner">
       <div className="mboard">
-        <div className="mboard-paper">
-          {IMAGES.paper && <img src={IMAGES.paper} className="mboard-paper-img" alt="한지"/>}
+
+        <div className="mboard-paper" style={IMAGES.paperOnly ? {backgroundImage:`url(${IMAGES.paperOnly})`, backgroundSize:"100% 100%", backgroundRepeat:"no-repeat", paddingBottom:"clamp(160px,24vw,320px)"} : {paddingBottom:"clamp(160px,24vw,320px)"}}>
           <div className="mboard-content">
             <div className="mtitle">사병 키우기</div>
             <p className="mdesc">복위를 위한 필수 단계인 사병 모으기입니다.<br/>태황대군의 단속을 피해 세 차례에 걸쳐 최소 <b>1,000명</b>의 사병을 모아야 합니다.<br/>이번에는 몇 명의 사병을 모집할까요?</p>
@@ -3203,27 +3307,86 @@ return (
 function EndingScreen({ endingKey, onRestart }) {
   const ending = ENDINGS[endingKey]||ENDINGS.failPersuade;
   const endImg = getEndingImage(endingKey);
+  const [showScroll, setShowScroll] = useState(false);
+
   return (
-    <div style={{width:"100vw",height:"100vh",position:"relative",overflow:"hidden",background:"#1a1208"}}>
-      {/* 엔딩 배경 이미지 전체화면 */}
+    <div style={{width:"100vw",height:"100vh",position:"relative",overflow:"hidden",background:"#1a1208"}}
+      onClick={()=>!showScroll&&setShowScroll(true)}>
+
+      {/* 1단계: 배경 이미지 */}
       {endImg
         ? <img src={endImg} alt={ending.title}
             style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",zIndex:0}}/>
-        : <div style={{position:"absolute",inset:0,zIndex:0,display:"flex",flexDirection:"column",
-            alignItems:"center",justifyContent:"center",gap:20,padding:32,background:"#1a1208"}}>
-            <div style={{fontSize:26,fontWeight:700,color:"#c9a84c"}}>{ending.title}</div>
-            <div style={{fontSize:14,lineHeight:2,color:"#fdf8f0",textAlign:"center",
-              whiteSpace:"pre-line",maxWidth:500}}>{ending.text}</div>
-          </div>
+        : <div style={{position:"absolute",inset:0,background:"#1a1208",zIndex:0}}/>
       }
-      {/* 다시하기 버튼 — 우하단 */}
-      <div style={{position:"absolute",bottom:32,right:32,zIndex:10}}>
-        <button className="btn-next" onClick={onRestart}>처음부터 다시하기</button>
-      </div>
+
+      {/* 배경 위 엔딩 제목 — 하단 중앙 */}
+      {!showScroll&&(
+        <div style={{position:"absolute",bottom:"12%",left:0,right:0,zIndex:2,
+          textAlign:"center",pointerEvents:"none"}}>
+          <div style={{fontSize:13,color:"rgba(253,248,240,0.6)",marginBottom:8,letterSpacing:"0.1em"}}>
+            {ending.title}
+          </div>
+          <div style={{fontSize:16,color:"rgba(253,248,240,0.5)",letterSpacing:"0.05em"}}>
+            화면을 터치하면 계속됩니다
+          </div>
+        </div>
+      )}
+
+      {/* 2단계: 두루마리 오버레이 */}
+      {showScroll&&(
+        <div style={{position:"absolute",inset:0,zIndex:5,
+          background:"rgba(0,0,0,0.55)",
+          display:"flex",flexDirection:"column",
+          alignItems:"center",justifyContent:"center",
+          padding:"20px 0"}}>
+
+          {/* 두루마리 */}
+          <div style={{position:"relative",width:"min(85vw,680px)",display:"flex",
+            flexDirection:"column",alignItems:"center"}}>
+            {IMAGES.scrollBg
+              ? <div style={{position:"relative",width:"100%"}}>
+                  <img src={IMAGES.scrollBg} alt="두루마리"
+                    style={{width:"100%",height:"auto",display:"block"}}/>
+                  {/* 두루마리 안 텍스트 */}
+                  <div style={{position:"absolute",top:"18%",left:"18%",right:"18%",bottom:"18%",
+                    display:"flex",flexDirection:"column",alignItems:"center",
+                    justifyContent:"center",overflow:"hidden"}}>
+                    <div style={{fontSize:"clamp(13px,1.8vw,20px)",fontWeight:700,
+                      color:"#3a2a0e",marginBottom:12,letterSpacing:"0.08em",
+                      textAlign:"center"}}>
+                      {ending.title}
+                    </div>
+                    <div style={{fontSize:"clamp(11px,1.4vw,16px)",lineHeight:2,
+                      color:"#3a2a0e",textAlign:"center",whiteSpace:"pre-line",
+                      overflowY:"auto",maxHeight:"100%"}}>
+                      {ending.text}
+                    </div>
+                  </div>
+                </div>
+              : <div style={{background:"#f5ead6",borderRadius:8,padding:"32px 40px",
+                  width:"100%",textAlign:"center"}}>
+                  <div style={{fontSize:18,fontWeight:700,color:"#3a2a0e",marginBottom:16}}>
+                    {ending.title}
+                  </div>
+                  <div style={{fontSize:14,lineHeight:2,color:"#3a2a0e",whiteSpace:"pre-line"}}>
+                    {ending.text}
+                  </div>
+                </div>
+            }
+          </div>
+
+          {/* 다시하기 버튼 */}
+          <button className="btn-next"
+            style={{marginTop:24,fontSize:16,padding:"12px 36px"}}
+            onClick={e=>{e.stopPropagation();onRestart();}}>
+            처음부터 다시하기
+          </button>
+        </div>
+      )}
     </div>
   );
 }
-
 // ============================================================
 // 메인 게임 엔진
 // ============================================================

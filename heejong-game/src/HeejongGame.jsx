@@ -1650,8 +1650,8 @@ const styles = `
   *{font-family:'ShillaCulture',serif !important}
   :root{
     --bg:#2b1d0f;
-    --gray:#d9d5ce;
-    --gray-dark:#c8c4bc;
+    --gray:#ffffff;
+    --gray-dark:#f0f0f0;
     --paper:#f5ead6;
     --paper-light:#fdf8ee;
     --ink:#2c1a0e;
@@ -2382,11 +2382,11 @@ function GoalScreen({ onNext, onPrev }) {
 function StatIntroScreen({ onNext, onPrev }) {
   const stats = [
     { key:"statAffection", label:"호감도", fallback:"🤝",
-      goal:"목표: 90 이상", danger:"0 이하 → 베드엔딩" },
+      goal:"목표: 90 이상", danger:"90 미만 → 배드엔딩" },
     { key:"statSoldier",   label:"무력",   fallback:"⚔️",
-      goal:"목표: 1,000명 이상", danger:"부족 → 전장 사망 엔딩" },
+      goal:"목표: 1,000명 이상", danger:"1,000명 미만 → 배드엔딩" },
     { key:"statMinsim",    label:"민심",   fallback:"🏮",
-      goal:"목표: 0 이상 유지", danger:"매주 감소, 8주차 -60" },
+      goal:"목표: 0 이상 유지", danger:"매주 5씩 감소, 8주차 -60" },
   ];
   return (
     <div className="page fade">
@@ -3111,11 +3111,11 @@ function MiniAlly({ onResult, badFaction="죽", sessionId }) {
       ? IMAGES.miniResultAllyOk && <img src={IMAGES.miniResultAllyOk} className="mini-result-bg" alt="결과"/>
       : IMAGES.miniResultAllyFail && <img src={IMAGES.miniResultAllyFail} className="mini-result-bg" alt="결과"/>
     }
-    <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"28px 32px",textAlign:"center",maxWidth:420}}>
-      <div className="mini-result-title" style={{fontSize:24,fontWeight:700,color:success?"#2e7d32":"#c62828",marginBottom:12}}>
+    <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"40px 60px",textAlign:"center",width:"80vw",maxWidth:700}}>
+      <div className="mini-result-title" style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:700,color:"#2c1a0e",marginBottom:20}}>
         {success?"성공하셨습니다":"실패하셨습니다"}
       </div>
-      <p className="mini-result-desc" style={{fontSize:15,lineHeight:1.9,color:"#2c1a0e",whiteSpace:"pre-line"}}>
+      <p className="mini-result-desc" style={{fontSize:"clamp(15px,2vw,22px)",lineHeight:2,color:"#2c1a0e",whiteSpace:"pre-line"}}>
         {success
           ? "복위에 우호적인 세력을 선택했습니다.\n\n선택하신 세력은 훗날 복위 작전에서\n당신에게 큰 힘이 되어줄 것입니다.\n\n이들의 지지가 희종의 복위를 향한\n첫 번째 초석이 될 것입니다."
           : "반(反)희종 세력을 선택하고 말았습니다.\n\n이들은 태황대군에게 당신의 계획을 고하고\n당신에게 사약을 내렸습니다."

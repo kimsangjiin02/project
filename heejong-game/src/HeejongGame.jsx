@@ -1463,16 +1463,17 @@ const INIT_RECS = {
 
 
 
+
 const ENDINGS = {
-  success:{title:"복위 성공 엔딩",text:"8주 간의 노력 끝에 당신은 희종의 마음을 돌리는 것에 성공했습니다.\n\n당신은 궁궐을 장악하는 것에 성공하고 마침내 희종을 복위시키는 데에 성공합니다. 태황대군은 반역의 죄를 받아 결국 목이 베었습니다.\n\n당신의 덕분에 자신감을 얻어 복위한 희종은 역사에 남은 성군이 되어 두 사람은 역사에 영웅으로 기록됩니다."},
-  deathBattle:{title:"전장에서 죽음 엔딩",text:"희종의 마음을 돌리는 것에 성공했지만, 궁궐의 입구에서 마주한 태황대군의 병사의 수는 당신의 사병의 수를 훨씬 앞질렀습니다.\n\n당신을 믿고 함께 올라온 희종과 사병들은 끝까지 힘을 합쳐 싸웠지만, 결국 군사력의 차이 앞에 무너지고 맙니다."},
-  failPersuade:{title:"희종 설득 실패 엔딩",text:"'숙부님, 역시 저는 안되겠습니다.'\n\n8주 간의 노력에도 불구하고 당신은 결국 희종의 마음을 돌리는 데에 실패했습니다."},
-  evil:{title:"사악 엔딩",text:"당신이 선택한 세력은 태황대군에 우호적인 세력이었습니다.\n\n이들은 태황대군에게 당신의 희종 복위 계획을 고했고, 태황대군은 당신에게 사약을 내렸습니다."},
-  soldierCaught:{title:"사병 발각 엔딩",text:"무리한 규모의 모집으로 태황대군의 단속에 당신의 사병 모집이 적발되었습니다.\n\n태황대군은 즉시 더 큰 병사를 보내 당신의 사병과 당신을 모두 섬멸했습니다."},
-  deathBoss:{title:"폭군의 칼에 사망 엔딩",text:"당신은 태황대군과의 대화에서 그의 심기를 거슬렸습니다. 분노한 태황대군은 바로 옆의 칼을 집어들어 한치의 망설임 없이 당신의 목을 베었습니다."},
-  userDeath:{title:"사용자&희종 사망 엔딩",text:"당신이 선택한 길에는 태황대군의 심복이 잠복 중이었습니다.\n\n서신이 태황대군에게 전달되었고, 태황대군은 당신과 희종에게 사약을 내렸습니다."},
-  badAffection:{title:"베드 엔딩",text:"희종의 마음이 완전히 닫혔습니다. 더 이상 대화를 나눌 수 없습니다..."},
-  poison:{title:"사약 엔딩",text:"태황대군은 당신의 행동이 수상하다는 것을 눈치채고 있었습니다.\n\n결국 당신에게 사약을 내렸습니다. 희종을 복위시키려던 모든 계획은 물거품이 되었습니다."},
+  success:{title:"복위 성공",text:"8주 간의 노력 끝에\n당신은 희종의 마음을 돌리는 것에 성공했습니다.\n틈틈히 진행한 협력 세력과 사병 확보 역시 성공한 당신은\n희종과 사병과 함께 도성으로 진군합니다.\n\n당신은 궁궐을 장악하는 것에 성공하고\n마침내 희종을 복위시키는 데에 성공합니다.\n태황대군은 반역의 죄를 받아 결국 목이 베었습니다.\n\n당신의 덕분에 자신감을 얻어 복위한 희종은\n역사에 남은 성군이 되어\n내리막길을 걷고 있던 조선을 완전히 구하고\n두 사람은 역사에 영웅으로 기록됩니다."},
+  deathBattle:{title:"전장에서의 죽음",text:"8주 간의 노력 끝에 희종의 마음을 돌리는 것에 성공한\n당신은 희종과 사병을 이끌고 도성으로 진군합니다.\n\n그러나 궁궐의 입구에서 마주한 태황대군의 병사의 수는\n당신의 사병의 수를 훨씬 앞질렀습니다.\n\n당신을 믿고 함께 올라온 희종과 사병들은\n끝까지 힘을 합쳐 싸웠지만,\n결국 군사력의 차이 앞에 무너지고 맙니다.\n\n당신과 희종을 포함한 군사는 모두 전멸했고,\n복위세력을 무찔러 기세등등해진 태황대군의 폭정 아래에서\n조선은 서서히 역사의 내리막길을 밟습니다."},
+  failPersuade:{title:"좌절된 신뢰",text:"\u201C숙부님, 역시 저는 안되겠습니다.\u201D\n\n8주 간의 노력에도 불구하고\n당신은 결국 희종의 마음을 돌리는 데에 실패했습니다.\n아무리 협력 세력을 모으고, 사병을 모아봐도\n희종이 없이는 어떤 작전도 개시할 수 없기에\n당신은 더 이상 할 수 있는 것이 없었습니다.\n\n시간이 흐르며 희종의 복위를 바라는\n백성들의 민심 역시 서서히 잦아들었습니다.\n그러한 태황대군의 폭정은 나날이 횡포를 더해갔고\n결국 조선은 서서히 예견되어 있던\n역사의 내리막길을 마주하게 됩니다."},
+  evil:{title:"배신의 대가",text:"당신이 선택한 세력은 태황대군에\n우호적인 세력이었습니다.\n당신의 협력 제안을 받은 이들은 태황대군에게\n당신의 희종 복위 계획을 고했고,\n태황대군은 당신에게 사약을 내렸습니다.\n\n아직 희종이 확실히 함께하고 있다는 증거는\n잡지 못하여 희종의 목숨은 건겼지만\n의심을 피하지 못해 감옥에 갇혔습니다.\n결국 복위 작전은 실패로 돌아가고\n조선은 역사의 내리막길을 걷게 됩니다."},
+  soldierCaught:{title:"발각된 야망",text:"무리한 규모의 모집으로 태황대군의 단속에\n당신의 사병 모집이 적발되었습니다.\n태황대군은 즉시 더 큰 병사를 보내\n당신의 사병과 당신을 모두 섬멸했습니다.\n\n사병이 희종과 연관되어 있다는 증거는 잡지 못하여\n희종의 목숨은 건겼습니다.\n하지만 사병이 크게 섬멸하였다는 소문이 퍼져\n더 이상의 복위 세력이 나오지 않았고\n결국 태황대군의 폭정 속에서\n조선은 서서히 망해갔습니다."},
+  deathBoss:{title:"폭군의 칼날",text:"당신은 태황대군과의 대화에서\n그의 심기를 거슬렸습니다.\n분노한 태황대군은 바로 옆의 칼을 집어들어\n한치의 망설임 없이 당신의 목을 베었습니다.\n\n오지 않던 당신을 기다리던 희종은\n당신이 태황대군 손에 죽었다는 소식을 건네들었고\n또 자신으로 인해 사람이 죽었다는 사실에\n크게 자책했습니다.\n더 이상의 복위 시도는 이뤄지지 못했고\n결국 태황대군의 폭정 아래에서\n조선은 역사의 내리막길을 걷게 됩니다."},
+  userDeath:{title:"끊긴 서신",text:"당신이 선택한 길에는\n태황대군의 심복이 잠복 중이었습니다.\n당신의 희종 복위 계획이 적힌 서신은\n태황대군에게 전달되었고,\n태황대군은 당신과 희종에게 사약을 내렸습니다.\n\n눈엣가시였던 희종을 제거한 태황대군은\n더욱 기세등등해져 폭정을 일삼았습니다.\n태황대군의 폭정 아래에서\n조선의 내리막길은 박차를 가했습니다."},
+  badAffection:{title:"닫힌 마음",text:"희종의 마음이 완전히 닫혔습니다.\n더 이상 대화를 나눌 수 없습니다.\n\n당신은 희종의 신뢰를 끝내 얻지 못한 채\n유배지를 떠나야만 했습니다.\n복위의 꿈은 시작도 되지 못한 채 사라졌고\n조선은 태황대군의 폭정 아래\n서서히 내리막길을 걷게 됩니다."},
+  poison:{title:"사약",text:"태황대군은 당신의 행동이 수상하다는 것을\n눈치채고 있었습니다.\n\n결국 당신에게 사약을 내렸습니다.\n희종을 복위시키려던 모든 계획은 물거품이 되었고\n조선은 태황대군의 폭정 아래\n역사의 내리막길을 걷게 됩니다."},
 };
 
 const ALL_FACTIONS = ["매","난","국","죽"];
@@ -2561,7 +2562,7 @@ async function handleBackendResponse(data, nc) {
 
 
 
-  if (newAffection <= -20) {
+  if (newAffection <= 0) {
     setTimeout(() => {
       if (!dialogCompleteRef.current) {
         dialogCompleteRef.current = true;
@@ -2671,6 +2672,17 @@ if (nc >= maxDialog) {
         setAffDelta(affDelta);
         onStatsChange({ affection: affDelta });
         setLoading(false);
+
+        const newAffectionRec = stats.affection + affDelta;
+        if (!isBoss && newAffectionRec < 0) {
+          setTimeout(() => {
+            if (!dialogCompleteRef.current) {
+              dialogCompleteRef.current = true;
+              onDialogComplete("badAffection");
+            }
+          }, 1500);
+          return;
+        }
 
         if (nc >= maxDialog) {
           setWaitingComplete(true);
@@ -3035,9 +3047,9 @@ ${currentNarration.tip}`
             <div style={{fontSize:20,fontWeight:700,color:"#e8c97a",marginBottom:20,letterSpacing:"0.08em"}}>스탯 설명</div>
             <div style={{display:"flex",justifyContent:"space-around",gap:12}}>
               {[
-                {img:IMAGES.statAffection,fallback:"🤝",label:"호감도",goal:"목표: 90 이상",danger:"0 이하 → 베드엔딩"},
-                {img:IMAGES.statSoldier,fallback:"⚔️",label:"무력",goal:"목표: 1,000명 이상",danger:"부족 → 전장 사망"},
-                {img:IMAGES.statMinsim,fallback:"🏮",label:"민심",goal:"목표: 0 이상 유지",danger:"매주 감소"},
+                {img:IMAGES.statAffection,fallback:"🤝",label:"호감도",goal:"목표: 90 이상",danger:"0 미만 → 베드엔딩"},
+                {img:IMAGES.statSoldier,fallback:"⚔️",label:"무력",goal:"목표: 1,000명 이상",danger:"부족 → 전장 사망 엔딩"},
+                {img:IMAGES.statMinsim,fallback:"🏮",label:"민심",goal:"목표: 0 이상 유지",danger:"매주 5씩 감소, 8주차 -60"},
               ].map(s=>(
                 <div key={s.label} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
                   {s.img
@@ -3099,16 +3111,17 @@ function MiniAlly({ onResult, badFaction="죽", sessionId }) {
       ? IMAGES.miniResultAllyOk && <img src={IMAGES.miniResultAllyOk} className="mini-result-bg" alt="결과"/>
       : IMAGES.miniResultAllyFail && <img src={IMAGES.miniResultAllyFail} className="mini-result-bg" alt="결과"/>
     }
-    {!success && (
-      <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"28px 32px",textAlign:"center",maxWidth:400}}>
-        <div className="mini-result-title" style={{fontSize:22,fontWeight:700,color:"#c62828",marginBottom:12}}>
-          실패하셨습니다
-        </div>
-        <p className="mini-result-desc" style={{fontSize:14,lineHeight:1.9,color:"#2c1a0e",whiteSpace:"pre-line"}}>
-          {"반(反)희종 세력을 선택하고 말았습니다.\n\n이들은 태황대군에게 당신의 계획을 고하고\n당신에게 사약을 내렸습니다."}
-        </p>
+    <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"28px 32px",textAlign:"center",maxWidth:420}}>
+      <div className="mini-result-title" style={{fontSize:24,fontWeight:700,color:success?"#2e7d32":"#c62828",marginBottom:12}}>
+        {success?"성공하셨습니다":"실패하셨습니다"}
       </div>
-    )}
+      <p className="mini-result-desc" style={{fontSize:15,lineHeight:1.9,color:"#2c1a0e",whiteSpace:"pre-line"}}>
+        {success
+          ? "복위에 우호적인 세력을 선택했습니다.\n\n선택하신 세력은 훗날 복위 작전에서\n당신에게 큰 힘이 되어줄 것입니다.\n\n이들의 지지가 희종의 복위를 향한\n첫 번째 초석이 될 것입니다."
+          : "반(反)희종 세력을 선택하고 말았습니다.\n\n이들은 태황대군에게 당신의 계획을 고하고\n당신에게 사약을 내렸습니다."
+        }
+      </p>
+    </div>
     <button className="mini-result-btn" onClick={()=>onResult(success?"allyOk":"evil")}>
       {success?"채팅 계속하기":"결과 확인"}
     </button>
@@ -3166,15 +3179,14 @@ function MiniLetter({ onResult, sessionId }) {
   if(showResult) return (
     <div className="mini-result">
       {IMAGES.miniResultLetterOk && <img src={IMAGES.miniResultLetterOk} className="mini-result-bg" alt="결과"/>}
-      {/* <div className="mini-result-card">
-        <div className="mini-result-title">{success?"성공하셨습니다":"실패하셨습니다"}</div>
-        <p className="mini-result-desc">
-          {success
-            ? "서신을 안전하게 전달했습니다.\n\n협력 세력은 복위 작전을 위해\n준비를 시작할 것입니다."
-            : "심복이 매복한 길을 선택하고 말았습니다.\n\n서신이 태황대군에게 전달되었고\n당신과 희종에게 사약이 내려졌습니다."
-          }
+      <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"28px 32px",textAlign:"center",maxWidth:400}}>
+        <div className="mini-result-title" style={{fontSize:22,fontWeight:700,color:"#2e7d32",marginBottom:12}}>
+          성공하셨습니다
+        </div>
+        <p className="mini-result-desc" style={{fontSize:14,lineHeight:1.9,color:"#2c1a0e",whiteSpace:"pre-line"}}>
+          {"비밀 서신을 들키지 않고 전달했습니다.\n\n서신을 받은 협력세력들이\n당신의 복위 계획을 함께 준비할 것입니다."}
         </p>
-      </div> */}
+      </div>
       <button className="mini-result-btn" onClick={()=>onResult("letterOk")}>
         채팅 계속하기
       </button>
@@ -3252,15 +3264,16 @@ function MiniSoldier({ week, currentSoldiers, onResult, sessionId }) {
         ? IMAGES.miniResultSoldierOk && <img src={IMAGES.miniResultSoldierOk} className="mini-result-bg" alt="결과"/>
         : IMAGES.miniResultSoldierFail && <img src={IMAGES.miniResultSoldierFail} className="mini-result-bg" alt="결과"/>
       }
-      {/* <div className="mini-result-card">
-        <div className="mini-result-title">{resultSuccess?"성공하셨습니다":"발각되었습니다"}</div>
-        <p className="mini-result-desc">
-          {resultSuccess
-            ? `${resultCount}명의 사병을 성공적으로 모집했습니다.\n\n이들은 훗날 복위 작전의 중요한 전력이\n될 것입니다.`
-            : "무리한 규모의 모집으로 태황대군의 단속에\n사병 모집이 적발되었습니다."
-          }
-        </p>
-      </div> */}
+      {resultSuccess && (
+        <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"28px 32px",textAlign:"center",maxWidth:400}}>
+          <div className="mini-result-title" style={{fontSize:22,fontWeight:700,color:"#2e7d32",marginBottom:12}}>
+            성공하셨습니다
+          </div>
+          <p className="mini-result-desc" style={{fontSize:14,lineHeight:1.9,color:"#2c1a0e",whiteSpace:"pre-line"}}>
+            {`비밀리에 사병 모집에 성공했습니다.\n\n모집된 사병은 훗날 복위 계획을 실행할 때\n당신에게 큰 힘이 되어줄 것입니다.\n\n현재 총 ${currentSoldiers + resultCount}명의 사병이 준비되어 있습니다.`}
+          </p>
+        </div>
+      )}
       <button className="mini-result-btn" onClick={()=>resultSuccess?onResult("soldierOk",resultCount):onResult("soldierCaught")}>
         {resultSuccess?"채팅 계속하기":"결과 확인"}
       </button>
@@ -3342,24 +3355,31 @@ function EndingScreen({ endingKey, onRestart }) {
           padding:"20px 0"}}>
 
           {/* 두루마리 */}
-          <div style={{position:"relative",width:"min(85vw,680px)",display:"flex",
+          <div style={{position:"relative",width:"min(95vw,1000px)",display:"flex",
             flexDirection:"column",alignItems:"center"}}>
             {IMAGES.scrollBg
               ? <div style={{position:"relative",width:"100%"}}>
-                  <img src={IMAGES.scrollBg} alt="두루마리"
-                    style={{width:"100%",height:"auto",display:"block"}}/>
-                  {/* 두루마리 안 텍스트 */}
-                  <div style={{position:"absolute",top:"18%",left:"18%",right:"18%",bottom:"18%",
-                    display:"flex",flexDirection:"column",alignItems:"center",
-                    justifyContent:"center",overflow:"hidden"}}>
-                    <div style={{fontSize:"clamp(13px,1.8vw,20px)",fontWeight:700,
-                      color:"#3a2a0e",marginBottom:12,letterSpacing:"0.08em",
+                  {/* 배경: 텍스트 높이에 맞게 늘어나도록 background-image로 */}
+                  <div style={{
+                    backgroundImage:`url(${IMAGES.scrollBg})`,
+                    backgroundSize:"100% 100%",
+                    backgroundRepeat:"no-repeat",
+                    width:"100%",
+                    padding:"18% 20% 18%",
+                    boxSizing:"border-box",
+                    display:"flex",
+                    flexDirection:"column",
+                    alignItems:"center",
+                    justifyContent:"center",
+                    minHeight:"85vh",
+                  }}>
+                    <div style={{fontSize:"clamp(18px,2.6vw,32px)",fontWeight:700,
+                      color:"#3a2a0e",marginBottom:16,letterSpacing:"0.08em",
                       textAlign:"center"}}>
                       {ending.title}
                     </div>
-                    <div style={{fontSize:"clamp(11px,1.4vw,16px)",lineHeight:2,
-                      color:"#3a2a0e",textAlign:"center",whiteSpace:"pre-line",
-                      overflowY:"auto",maxHeight:"100%"}}>
+                    <div style={{fontSize:"clamp(14px,2vw,22px)",lineHeight:2,
+                      color:"#3a2a0e",textAlign:"center",whiteSpace:"pre-line"}}>
                       {ending.text}
                     </div>
                   </div>
@@ -3375,7 +3395,6 @@ function EndingScreen({ endingKey, onRestart }) {
                 </div>
             }
           </div>
-
           {/* 다시하기 버튼 */}
           <button className="btn-next"
             style={{marginTop:24,fontSize:16,padding:"12px 36px"}}
@@ -3405,7 +3424,7 @@ export default function HeejongGame() {
     setStats(s=>({
       // 호감도 최솟값 -20 (한두 번 실수로 바로 베드엔딩 안 됨)
       // 베드엔딩은 -20 이하일 때만 발생
-      affection:Math.max(-20,Math.min(100,s.affection+(delta.affection||0))),
+      affection:Math.max(0,Math.min(100,s.affection+(delta.affection||0))),
       soldiers:s.soldiers+(delta.soldiers||0),
       minsim:Math.max(0,s.minsim+(delta.minsim||0)),
     }));
@@ -3416,7 +3435,7 @@ export default function HeejongGame() {
     if(result==="bossKill"){triggerEnding("deathBoss");return;}
     if(result==="bossSurvive"){setScreen("mini_soldier");return;}
     // 8주차 사병 미니게임 완료 후 마지막 대화 → ending_confirm
-    const miniMap={1:"mini_ally",2:"mini_soldier",3:"mini_letter",4:null,5:null,6:"mini_ally",7:"mini_soldier",8:"mini_soldier"};
+    const miniMap={1:"mini_ally",2:"mini_soldier",3:"mini_letter",4:null,5:null,6:"mini_ally",7:"mini_soldier",8:null};
     const mini=miniMap[week];
     if(mini) setScreen(mini); else advanceWeek();
   }

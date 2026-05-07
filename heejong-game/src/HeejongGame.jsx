@@ -3201,11 +3201,11 @@ function MiniLetter({ onResult, sessionId }) {
   if(showResult) return (
     <div className="mini-result">
       {IMAGES.miniResultLetterOk && <img src={IMAGES.miniResultLetterOk} className="mini-result-bg" alt="결과"/>}
-      <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"28px 32px",textAlign:"center",maxWidth:400}}>
-        <div className="mini-result-title" style={{fontSize:22,fontWeight:700,color:"#2e7d32",marginBottom:12}}>
+      <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"40px 60px",textAlign:"center",width:"80vw",maxWidth:700}}>
+        <div className="mini-result-title" style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:700,color:"#2c1a0e",marginBottom:20}}>
           성공하셨습니다
         </div>
-        <p className="mini-result-desc" style={{fontSize:14,lineHeight:1.9,color:"#2c1a0e",whiteSpace:"pre-line"}}>
+        <p className="mini-result-desc" style={{fontSize:"clamp(15px,2vw,22px)",lineHeight:2,color:"#2c1a0e",whiteSpace:"pre-line"}}>
           {"비밀 서신을 들키지 않고 전달했습니다.\n\n서신을 받은 협력세력들이\n당신의 복위 계획을 함께 준비할 것입니다."}
         </p>
       </div>
@@ -3287,11 +3287,11 @@ function MiniSoldier({ week, currentSoldiers, onResult, sessionId }) {
         : IMAGES.miniResultSoldierFail && <img src={IMAGES.miniResultSoldierFail} className="mini-result-bg" alt="결과"/>
       }
       {resultSuccess && (
-        <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"28px 32px",textAlign:"center",maxWidth:400}}>
-          <div className="mini-result-title" style={{fontSize:22,fontWeight:700,color:"#2e7d32",marginBottom:12}}>
+        <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"40px 60px",textAlign:"center",width:"80vw",maxWidth:700}}>
+          <div className="mini-result-title" style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:700,color:"#2c1a0e",marginBottom:20}}>
             성공하셨습니다
           </div>
-          <p className="mini-result-desc" style={{fontSize:14,lineHeight:1.9,color:"#2c1a0e",whiteSpace:"pre-line"}}>
+          <p className="mini-result-desc" style={{fontSize:"clamp(15px,2vw,22px)",lineHeight:2,color:"#2c1a0e",whiteSpace:"pre-line"}}>
             {`비밀리에 사병 모집에 성공했습니다.\n\n모집된 사병은 훗날 복위 계획을 실행할 때\n당신에게 큰 힘이 되어줄 것입니다.\n\n현재 총 ${currentSoldiers + resultCount}명의 사병이 준비되어 있습니다.`}
           </p>
         </div>

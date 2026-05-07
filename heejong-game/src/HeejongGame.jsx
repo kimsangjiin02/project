@@ -1465,15 +1465,15 @@ const INIT_RECS = {
 
 
 const ENDINGS = {
-  success:{title:"복위 성공",text:"8주 간의 노력 끝에\n당신은 희종의 마음을 돌리는 것에 성공했습니다.\n틈틈히 진행한 협력 세력과 사병 확보 역시 성공한 당신은\n희종과 사병과 함께 도성으로 진군합니다.\n\n당신은 궁궐을 장악하는 것에 성공하고\n마침내 희종을 복위시키는 데에 성공합니다.\n태황대군은 반역의 죄를 받아 결국 목이 베었습니다.\n\n당신의 덕분에 자신감을 얻어 복위한 희종은\n역사에 남은 성군이 되어\n내리막길을 걷고 있던 조선을 완전히 구하고\n두 사람은 역사에 영웅으로 기록됩니다."},
-  deathBattle:{title:"전장에서의 죽음",text:"8주 간의 노력 끝에 희종의 마음을 돌리는 것에 성공한\n당신은 희종과 사병을 이끌고 도성으로 진군합니다.\n\n그러나 궁궐의 입구에서 마주한 태황대군의 병사의 수는\n당신의 사병의 수를 훨씬 앞질렀습니다.\n\n당신을 믿고 함께 올라온 희종과 사병들은\n끝까지 힘을 합쳐 싸웠지만,\n결국 군사력의 차이 앞에 무너지고 맙니다.\n\n당신과 희종을 포함한 군사는 모두 전멸했고,\n복위세력을 무찔러 기세등등해진 태황대군의 폭정 아래에서\n조선은 서서히 역사의 내리막길을 밟습니다."},
+  success:{title:"왕의 귀환",text:"8주 간의 노력 끝에\n당신은 희종의 마음을 돌리는 것에 성공했습니다.\n틈틈히 진행한 협력 세력과 사병 확보 역시 성공한 당신은\n희종과 사병과 함께 도성으로 진군합니다.\n\n당신은 궁궐을 장악하는 것에 성공하고\n마침내 희종을 복위시키는 데에 성공합니다.\n태황대군은 반역의 죄를 받아 결국 목이 베었습니다.\n\n당신의 덕분에 자신감을 얻어 복위한 희종은\n역사에 남은 성군이 되어\n내리막길을 걷고 있던 조선을 완전히 구하고\n두 사람은 역사에 영웅으로 기록됩니다."},
+  deathBattle:{title:"처절한 전사",text:"8주 간의 노력 끝에 희종의 마음을 돌리는 것에 성공한\n당신은 희종과 사병을 이끌고 도성으로 진군합니다.\n\n그러나 궁궐의 입구에서 마주한 태황대군의 병사의 수는\n당신의 사병의 수를 훨씬 앞질렀습니다.\n\n당신을 믿고 함께 올라온 희종과 사병들은\n끝까지 힘을 합쳐 싸웠지만,\n결국 군사력의 차이 앞에 무너지고 맙니다.\n\n당신과 희종을 포함한 군사는 모두 전멸했고,\n복위세력을 무찔러 기세등등해진 태황대군의 폭정 아래에서\n조선은 서서히 역사의 내리막길을 밟습니다."},
   failPersuade:{title:"좌절된 신뢰",text:"\u201C숙부님, 역시 저는 안되겠습니다.\u201D\n\n8주 간의 노력에도 불구하고\n당신은 결국 희종의 마음을 돌리는 데에 실패했습니다.\n아무리 협력 세력을 모으고, 사병을 모아봐도\n희종이 없이는 어떤 작전도 개시할 수 없기에\n당신은 더 이상 할 수 있는 것이 없었습니다.\n\n시간이 흐르며 희종의 복위를 바라는\n백성들의 민심 역시 서서히 잦아들었습니다.\n그러한 태황대군의 폭정은 나날이 횡포를 더해갔고\n결국 조선은 서서히 예견되어 있던\n역사의 내리막길을 마주하게 됩니다."},
-  evil:{title:"배신의 대가",text:"당신이 선택한 세력은 태황대군에\n우호적인 세력이었습니다.\n당신의 협력 제안을 받은 이들은 태황대군에게\n당신의 희종 복위 계획을 고했고,\n태황대군은 당신에게 사약을 내렸습니다.\n\n아직 희종이 확실히 함께하고 있다는 증거는\n잡지 못하여 희종의 목숨은 건겼지만\n의심을 피하지 못해 감옥에 갇혔습니다.\n결국 복위 작전은 실패로 돌아가고\n조선은 역사의 내리막길을 걷게 됩니다."},
-  soldierCaught:{title:"발각된 야망",text:"무리한 규모의 모집으로 태황대군의 단속에\n당신의 사병 모집이 적발되었습니다.\n태황대군은 즉시 더 큰 병사를 보내\n당신의 사병과 당신을 모두 섬멸했습니다.\n\n사병이 희종과 연관되어 있다는 증거는 잡지 못하여\n희종의 목숨은 건겼습니다.\n하지만 사병이 크게 섬멸하였다는 소문이 퍼져\n더 이상의 복위 세력이 나오지 않았고\n결국 태황대군의 폭정 속에서\n조선은 서서히 망해갔습니다."},
-  deathBoss:{title:"폭군의 칼날",text:"당신은 태황대군과의 대화에서\n그의 심기를 거슬렸습니다.\n분노한 태황대군은 바로 옆의 칼을 집어들어\n한치의 망설임 없이 당신의 목을 베었습니다.\n\n오지 않던 당신을 기다리던 희종은\n당신이 태황대군 손에 죽었다는 소식을 건네들었고\n또 자신으로 인해 사람이 죽었다는 사실에\n크게 자책했습니다.\n더 이상의 복위 시도는 이뤄지지 못했고\n결국 태황대군의 폭정 아래에서\n조선은 역사의 내리막길을 걷게 됩니다."},
-  userDeath:{title:"끊긴 서신",text:"당신이 선택한 길에는\n태황대군의 심복이 잠복 중이었습니다.\n당신의 희종 복위 계획이 적힌 서신은\n태황대군에게 전달되었고,\n태황대군은 당신과 희종에게 사약을 내렸습니다.\n\n눈엣가시였던 희종을 제거한 태황대군은\n더욱 기세등등해져 폭정을 일삼았습니다.\n태황대군의 폭정 아래에서\n조선의 내리막길은 박차를 가했습니다."},
-  badAffection:{title:"닫힌 마음",text:"희종의 마음이 완전히 닫혔습니다.\n더 이상 대화를 나눌 수 없습니다.\n\n당신은 희종의 신뢰를 끝내 얻지 못한 채\n유배지를 떠나야만 했습니다.\n복위의 꿈은 시작도 되지 못한 채 사라졌고\n조선은 태황대군의 폭정 아래\n서서히 내리막길을 걷게 됩니다."},
-  poison:{title:"사약",text:"태황대군은 당신의 행동이 수상하다는 것을\n눈치채고 있었습니다.\n\n결국 당신에게 사약을 내렸습니다.\n희종을 복위시키려던 모든 계획은 물거품이 되었고\n조선은 태황대군의 폭정 아래\n역사의 내리막길을 걷게 됩니다."},
+  evil:{title:"홀로 맞은 끝",text:"당신이 선택한 세력은 태황대군에\n우호적인 세력이었습니다.\n당신의 협력 제안을 받은 이들은 태황대군에게\n당신의 희종 복위 계획을 고했고,\n태황대군은 당신에게 사약을 내렸습니다.\n\n아직 희종이 확실히 함께하고 있다는 증거는\n잡지 못하여 희종의 목숨은 건겼지만\n의심을 피하지 못해 감옥에 갇혔습니다.\n결국 복위 작전은 실패로 돌아가고\n조선은 역사의 내리막길을 걷게 됩니다."},
+  soldierCaught:{title:"허망한 발각",text:"무리한 규모의 모집으로 태황대군의 단속에\n당신의 사병 모집이 적발되었습니다.\n태황대군은 즉시 더 큰 병사를 보내\n당신의 사병과 당신을 모두 섬멸했습니다.\n\n사병이 희종과 연관되어 있다는 증거는 잡지 못하여\n희종의 목숨은 건겼습니다.\n하지만 사병이 크게 섬멸하였다는 소문이 퍼져\n더 이상의 복위 세력이 나오지 않았고\n결국 태황대군의 폭정 속에서\n조선은 서서히 망해갔습니다."},
+  deathBoss:{title:"잔혹한 최후",text:"당신은 태황대군과의 대화에서\n그의 심기를 거슬렸습니다.\n분노한 태황대군은 바로 옆의 칼을 집어들어\n한치의 망설임 없이 당신의 목을 베었습니다.\n\n오지 않던 당신을 기다리던 희종은\n당신이 태황대군 손에 죽었다는 소식을 건네들었고\n또 자신으로 인해 사람이 죽었다는 사실에\n크게 자책했습니다.\n더 이상의 복위 시도는 이뤄지지 못했고\n결국 태황대군의 폭정 아래에서\n조선은 역사의 내리막길을 걷게 됩니다."},
+  userDeath:{title:"고요한 최후",text:"당신이 선택한 길에는\n태황대군의 심복이 잠복 중이었습니다.\n당신의 희종 복위 계획이 적힌 서신은\n태황대군에게 전달되었고,\n태황대군은 당신과 희종에게 사약을 내렸습니다.\n\n눈엣가시였던 희종을 제거한 태황대군은\n더욱 기세등등해져 폭정을 일삼았습니다.\n태황대군의 폭정 아래에서\n조선의 내리막길은 박차를 가했습니다."},
+  badAffection:{title:"좌절된 신뢰",text:"희종의 마음이 완전히 닫혔습니다.\n더 이상 대화를 나눌 수 없습니다.\n\n당신은 희종의 신뢰를 끝내 얻지 못한 채\n유배지를 떠나야만 했습니다.\n복위의 꿈은 시작도 되지 못한 채 사라졌고\n조선은 태황대군의 폭정 아래\n서서히 내리막길을 걷게 됩니다."},
+  poison:{title:"고요한 최후",text:"태황대군은 당신의 행동이 수상하다는 것을\n눈치채고 있었습니다.\n\n결국 당신에게 사약을 내렸습니다.\n희종을 복위시키려던 모든 계획은 물거품이 되었고\n조선은 태황대군의 폭정 아래\n역사의 내리막길을 걷게 됩니다."},
 };
 
 const ALL_FACTIONS = ["매","난","국","죽"];
@@ -3201,11 +3201,11 @@ function MiniLetter({ onResult, sessionId }) {
   if(showResult) return (
     <div className="mini-result">
       {IMAGES.miniResultLetterOk && <img src={IMAGES.miniResultLetterOk} className="mini-result-bg" alt="결과"/>}
-      <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"28px 32px",textAlign:"center",maxWidth:400}}>
-        <div className="mini-result-title" style={{fontSize:22,fontWeight:700,color:"#2e7d32",marginBottom:12}}>
+      <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"40px 60px",textAlign:"center",width:"80vw",maxWidth:700}}>
+        <div className="mini-result-title" style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:700,color:"#2c1a0e",marginBottom:20}}>
           성공하셨습니다
         </div>
-        <p className="mini-result-desc" style={{fontSize:14,lineHeight:1.9,color:"#2c1a0e",whiteSpace:"pre-line"}}>
+        <p className="mini-result-desc" style={{fontSize:"clamp(15px,2vw,22px)",lineHeight:2,color:"#2c1a0e",whiteSpace:"pre-line"}}>
           {"비밀 서신을 들키지 않고 전달했습니다.\n\n서신을 받은 협력세력들이\n당신의 복위 계획을 함께 준비할 것입니다."}
         </p>
       </div>
@@ -3288,10 +3288,10 @@ function MiniSoldier({ week, currentSoldiers, onResult, sessionId }) {
       }
       {resultSuccess && (
         <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"40px 60px",textAlign:"center",width:"80vw",maxWidth:700}}>
-  <div className="mini-result-title" style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:700,color:"#2c1a0e",marginBottom:20}}>
-    성공하셨습니다
-  </div>
-  <p className="mini-result-desc" style={{fontSize:"clamp(15px,2vw,22px)",lineHeight:2,color:"#2c1a0e",whiteSpace:"pre-line"}}>
+          <div className="mini-result-title" style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:700,color:"#2c1a0e",marginBottom:20}}>
+            성공하셨습니다
+          </div>
+          <p className="mini-result-desc" style={{fontSize:"clamp(15px,2vw,22px)",lineHeight:2,color:"#2c1a0e",whiteSpace:"pre-line"}}>
             {`비밀리에 사병 모집에 성공했습니다.\n\n모집된 사병은 훗날 복위 계획을 실행할 때\n당신에게 큰 힘이 되어줄 것입니다.\n\n현재 총 ${currentSoldiers + resultCount}명의 사병이 준비되어 있습니다.`}
           </p>
         </div>

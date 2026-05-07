@@ -1431,7 +1431,7 @@ import { useState, useEffect, useRef } from "react";
 const INITIAL_STATS = { affection: 0, soldiers: 50, minsim: 100 };
 
 const PROLOGUE_PAGES = [
-  "1400년대의 조선, 12세의 어린 나이에 제 6대 왕 희종이 즉위하게 된다. 그러나 즉위 1년 만에 숙부인 태황대군이 난을 일으켜 정권을 장악하여 실권을 강제로 빼앗기게 된다. 왕위에서 쫓겨난 희종은 시골의 어느 마을로 유배를 가게 된다.",
+  "1400년대의 조선, 17세의 어린 나이에 제 6대 왕 희종이 즉위하게 된다. 그러나 즉위 1년 만에 숙부인 태황대군이 난을 일으켜 정권을 장악하여 실권을 강제로 빼앗기게 된다. 왕위에서 쫓겨난 희종은 시골의 어느 마을로 유배를 가게 된다.",
   "한편, 왕위를 장악한 태황대군은 조선의 역사에 없었던 폭정을 휘두른다. 궐에서는 날마다 사람이 죽어나가고, 태황대군의 사치로 궐의 곳간 역시 빠르게 비게 된다. 당연하게 백성들의 민심은 나날이 흉흉해졌다. 심지어는 곳곳에서 희종의 복위를 바라는 목소리 역시 들려오기 시작했다.",
   "반정으로 인해 희종은 자신 때문에 충신들이 모두 죽임 당했다는 극심한 죄책감에 시달리고 있다. 왕으로서의 모든 자존심도, 자신감도 사라진 상태이다. 희종은 이제 유배지에서 죽을 날만을 하루하루 기다리며 무기력하게 살고 있다.",
   "당신은 그런 희종을 어린 시절부터 지켜본 희종의 또 다른 숙부이다. 당신은 8주 이내에 좌절에 빠진 희종을 설득하여 희종을 복위시키고, 태황 대군의 폭정 아래에서 위기에 빠진 조선을 구하라.",
@@ -1694,7 +1694,7 @@ const styles = `
   .name-input{flex:1;background:#ffffff;border:1px solid #c8b48a;border-radius:4px;padding:10px 14px;color:#2c1a0e;font-size:17px;outline:none}
   .name-input::placeholder{color:#a09080}
   .name-input:focus{border-color:var(--gold)}
-  .goal-wrap,.stat-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:480px;padding:0 24px}
+  .goal-wrap,.stat-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:720px;padding:0 24px}
   .goal-title,.stat-title{font-size:34px;font-weight:700;color:var(--white);letter-spacing:0.1em}
   .goal-illust{width:160px;height:130px;object-fit:contain}
   .goal-illust-placeholder,.stat-item-placeholder{display:flex;align-items:center;justify-content:center;font-size:40px}
@@ -1704,8 +1704,8 @@ const styles = `
   .stat-box-desc{margin-bottom:20px}
   .stat-icons-row{display:flex;justify-content:space-around;align-items:flex-end;gap:12px}
   .stat-item-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
-  .stat-item-img{width:100px;height:100px;object-fit:contain}
-  .stat-item-placeholder{width:100px;height:100px}
+  .stat-item-img{width:130px;height:130px;object-fit:contain}
+  .stat-item-placeholder{width:130px;height:130px}
   .stat-item-label{font-size:17px;color:var(--ink);font-weight:700}
 
   
@@ -2393,20 +2393,42 @@ function StatIntroScreen({ onNext, onPrev }) {
       <div className="stat-wrap">
         <div className="stat-title">스탯 시스템</div>
         <div className="stat-box">
-          <p className="stat-box-desc">대화와 미니게임을 통해 스탯을 향상시킬 수 있습니다.</p>
+          <p className="stat-box-desc">민심이 떨어지기 전에 대화를 통해 스탯을 향상시키세요..</p>
           <div className="stat-icons-row">
-            {stats.map(s => (
-              <div className="stat-item-wrap" key={s.label}>
-                {IMAGES[s.key]
-                  ? <img src={IMAGES[s.key]} className="stat-item-img" alt={s.label}/>
-                  : <div className="stat-item-placeholder">{s.fallback}</div>
-                }
-                <div className="stat-item-label">{s.label}</div>
-                <div style={{fontSize:14,color:"#2e7d32",fontWeight:700,textAlign:"center",lineHeight:1.5}}>{s.goal}</div>
-                <div style={{fontSize:12,color:"#c62828",textAlign:"center",lineHeight:1.5}}>{s.danger}</div>
-              </div>
-            ))}
+            {/* 호감도 + 무력 묶음 박스 */}
+            <div style={{display:"flex",gap:0,border:"1px solid #d4c4a0",borderRadius:12,
+              background:"#fdf8f0",overflow:"hidden",flex:2}}>
+              {stats.slice(0,2).map(s=>(
+                <div className="stat-item-wrap" key={s.label}
+                  style={{display:"flex",flexDirection:"column",alignItems:"center",
+                    padding:"20px 16px",flex:1}}>
+                  {IMAGES[s.key]
+                    ? <img src={IMAGES[s.key]} className="stat-item-img" alt={s.label}/>
+                    : <div className="stat-item-placeholder">{s.fallback}</div>
+                  }
+                  <div className="stat-item-label">{s.label}</div>
+                  <div style={{fontSize:14,color:"#2e7d32",fontWeight:700,textAlign:"center",lineHeight:1.5}}>{s.goal}</div>
+                  <div style={{fontSize:12,color:"#c62828",textAlign:"center",lineHeight:1.5}}>{s.danger}</div>
+                </div>
+              ))}
+            </div>
+            {/* 민심 단독 박스 */}
+            <div className="stat-item-wrap"
+              style={{border:"1px solid #d4c4a0",borderRadius:12,padding:"20px 16px",
+                display:"flex",flexDirection:"column",alignItems:"center",
+                background:"#fdf8f0",flex:1}}>
+              {IMAGES[stats[2].key]
+                ? <img src={IMAGES[stats[2].key]} className="stat-item-img" alt={stats[2].label}/>
+                : <div className="stat-item-placeholder">{stats[2].fallback}</div>
+              }
+              <div className="stat-item-label">{stats[2].label}</div>
+              <div style={{fontSize:14,color:"#2e7d32",fontWeight:700,textAlign:"center",lineHeight:1.5}}>{stats[2].goal}</div>
+              <div style={{fontSize:12,color:"#c62828",textAlign:"center",lineHeight:1.5}}>{stats[2].danger}</div>
+            </div>
           </div>
+          <p style={{fontSize:12,color:"#8a7050",textAlign:"right",marginTop:16,lineHeight:1.6}}>
+            *민심은 플레이어가 조절할 수 없으며, 매주 5씩 떨어집니다.
+          </p>
         </div>
       </div>
       <BottomNav onPrev={onPrev} onNext={onNext} />

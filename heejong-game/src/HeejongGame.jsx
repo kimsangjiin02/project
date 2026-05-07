@@ -1855,7 +1855,7 @@ const styles = `
       position:absolute;
       inset:0;
       width:100%;
-      height:100%;
+      height:133%;
       object-fit:cover;
       object-position:top;
       z-index:0;
@@ -3446,7 +3446,7 @@ export default function HeejongGame() {
     setStats(s=>({
       // 호감도 최솟값 -20 (한두 번 실수로 바로 베드엔딩 안 됨)
       // 베드엔딩은 -20 이하일 때만 발생
-      affection:Math.max(0,Math.min(100,s.affection+(delta.affection||0))),
+      affection:Math.max(0,s.affection+(delta.affection||0)),
       soldiers:s.soldiers+(delta.soldiers||0),
       minsim:Math.max(0,s.minsim+(delta.minsim||0)),
     }));
@@ -3514,4 +3514,3 @@ export default function HeejongGame() {
     </>
   );
 }
-

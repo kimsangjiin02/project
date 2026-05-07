@@ -2573,25 +2573,27 @@ async function handleBackendResponse(data, nc) {
 
       const nc = dialogCount+1;
       setDialogCount(nc);
-
-      if(isBoss){
-        // 보스: 추천 답변 → 심기 +5 고정
-        const newHp = Math.min(30, bossHp+5);
-        setBossHp(newHp); setBossDelta(5);
-        setLoading(false);
-      if (newHp <= 0) {
-  setTimeout(() => finishBossScene("bossKill"), 1500);
-  return;
+if(isBoss){
+  const bossDeltaVal = data.stats?.폭군심기변화 ?? 0;
+  const newHp = Math.max(0, Math.min(30, bossHp + bossDeltaVal));
+  setBossHp(newHp);
+  setBossDelta(bossDeltaVal);
+  setLoading(false);
+  if(newHp<=0){ setTimeout(()=>finishBossScene("bossKill"),1500); return;}
+  if(nc>=maxDialog){ setTimeout(()=>finishBossScene("bossSurvive"),1500); return;}
 }
+
 
 if (nc >= maxDialog) {
   setTimeout(() => finishBossScene("bossSurvive"), 1500);
   return;
-}      } else {
+}      else {
         const affDelta = data.stats?.호감도변화 ?? 0;
 
-        setAffDelta(affDelta);
-        onStatsChange({ affection: affDelta });
+    
+const recAff = Math.floor(Math.random() * 3) + 1; // 1~3 랜덤
+setAffDelta(recAff);
+onStatsChange({affection: recAff});
         setLoading(false);
 
         if (nc >= maxDialog) {
@@ -2613,8 +2615,7 @@ if (nc >= maxDialog) {
       const nc = dialogCount+1;
       setDialogCount(nc);
       if(isBoss){
-        const newHp = Math.min(30,bossHp+5);
-        setBossHp(newHp); setBossDelta(5);
+       setBossDelta(0);
       } else {
         setAffDelta(0);
         onStatsChange({affection:0});

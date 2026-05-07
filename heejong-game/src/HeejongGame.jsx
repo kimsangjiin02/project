@@ -2230,11 +2230,11 @@ position:fixed;
 // ============================================================
 // 백엔드 연동
 // ============================================================
-async function callBackend(message, sessionId) {
+async function callBackend(message, sessionId,playerName="") {
   const r = await fetch(`${API}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message, session_id: sessionId })
+    body: JSON.stringify({ message, session_id: sessionId,player_name:playerName})
   });
 
   const data = await r.json().catch(() => ({}));
@@ -2627,7 +2627,7 @@ async function handleBackendResponse(data, nc) {
     setMessages(m=>[...m,{role:"user",text}]);
     setInput("");
     try {
-      const data = await callBackend(text, sessionId);
+      const data = await callBackend(text, sessionId,playerName);
       await handleBackendResponse(data, dialogCount+1);
     } catch { setLoading(false); }
   }
@@ -2656,7 +2656,7 @@ async function handleBackendResponse(data, nc) {
     // 백엔드 호출 시도 (대사와 추천답변 갱신 목적)
     // 단, 호감도/심기 변화는 프론트에서 고정값 사용
     try {
-      const data = await callBackend(text, sessionId);
+      const data = await callBackend(text, sessionId,playerName);
       const npcText = data.대사 || (isBoss
         ? BOSS_REC_REPLIES[Math.floor(Math.random()*BOSS_REC_REPLIES.length)]
         : NPC_REC_REPLIES[Math.floor(Math.random()*NPC_REC_REPLIES.length)]);

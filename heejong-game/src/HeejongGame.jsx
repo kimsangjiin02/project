@@ -2018,7 +2018,7 @@ const styles = `
   justify-content:center;
   margin:0 auto;
   flex-shrink:0;
-  padding:clamp(30px,4vw,60px) clamp(40px,6vw,100px) clamp(50px,7vw,100px);
+  padding:clamp(30px,4vw,60px) clamp(40px,6vw,100px) clamp(120px,14vw,200px);
   z-index:2;
 }
 .mboard-rope{
@@ -3377,35 +3377,38 @@ function EndingScreen({ endingKey, onRestart }) {
           padding:"20px 0"}}>
 
           {/* 두루마리 */}
-          <div style={{position:"relative",width:"min(95vw,1000px)",display:"flex",
-            flexDirection:"column",alignItems:"center"}}>
-            {IMAGES.scrollBg
-              ? <div style={{position:"relative",width:"100%"}}>
-                  {/* 배경: 텍스트 높이에 맞게 늘어나도록 background-image로 */}
-                  <div style={{
-                    backgroundImage:`url(${IMAGES.scrollBg})`,
-                    backgroundSize:"100% 100%",
-                    backgroundRepeat:"no-repeat",
-                    width:"100%",
-                    padding:"18% 20% 18%",
-                    boxSizing:"border-box",
-                    display:"flex",
-                    flexDirection:"column",
-                    alignItems:"center",
-                    justifyContent:"center",
-                    minHeight:"85vh",
-                  }}>
-                    <div style={{fontSize:"clamp(18px,2.6vw,32px)",fontWeight:700,
-                      color:"#3a2a0e",marginBottom:16,letterSpacing:"0.08em",
-                      textAlign:"center"}}>
-                      {ending.title}
-                    </div>
-                    <div style={{fontSize:"clamp(14px,2vw,22px)",lineHeight:2,
-                      color:"#3a2a0e",textAlign:"center",whiteSpace:"pre-line"}}>
-                      {ending.text}
-                    </div>
-                  </div>
-                </div>
+        <div style={{position:"relative",width:"min(80vw,1000px)",display:"flex",
+  flexDirection:"column",alignItems:"center"}}>
+  {IMAGES.scrollBg
+    ? <div style={{position:"relative",width:"100%"}}>
+        <img src={IMAGES.scrollBg} alt="두루마리"
+          style={{position:"absolute",top:"50%",left:"50%",
+            transform:"translate(-50%,-50%)",
+            width:"140%",height:"140%",
+            objectFit:"fill",zIndex:0,pointerEvents:"none"}}/>
+        <div style={{
+          position:"relative",zIndex:1,
+          width:"100%",
+          padding:"18% 20% 18%",
+          boxSizing:"border-box",
+          display:"flex",
+          flexDirection:"column",
+          alignItems:"center",
+          justifyContent:"center",
+          minHeight:"85vh",
+        }}>
+          <div style={{fontSize:"clamp(18px,2.6vw,32px)",fontWeight:700,
+            color:"#3a2a0e",marginBottom:16,letterSpacing:"0.08em",
+            textAlign:"center"}}>
+            {ending.title}
+          </div>
+          <div style={{fontSize:"clamp(14px,2vw,22px)",lineHeight:2,
+            color:"#3a2a0e",textAlign:"center",whiteSpace:"pre-line"}}>
+            {ending.text}
+          </div>
+        </div>
+      </div>
+
               : <div style={{background:"#f5ead6",borderRadius:8,padding:"32px 40px",
                   width:"100%",textAlign:"center"}}>
                   <div style={{fontSize:18,fontWeight:700,color:"#3a2a0e",marginBottom:16}}>

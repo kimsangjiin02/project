@@ -2018,7 +2018,7 @@ const styles = `
   justify-content:center;
   margin:0 auto;
   flex-shrink:0;
-  padding:clamp(30px,4vw,60px) clamp(40px,6vw,100px) clamp(50px,7vw,100px);
+  padding:clamp(30px,4vw,60px) clamp(40px,6vw,100px) clamp(120px,14vw,200px);
   z-index:2;
 }
 .mboard-rope{
@@ -3287,11 +3287,11 @@ function MiniSoldier({ week, currentSoldiers, onResult, sessionId }) {
         : IMAGES.miniResultSoldierFail && <img src={IMAGES.miniResultSoldierFail} className="mini-result-bg" alt="결과"/>
       }
       {resultSuccess && (
-        <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"28px 32px",textAlign:"center",maxWidth:400}}>
-          <div className="mini-result-title" style={{fontSize:22,fontWeight:700,color:"#2e7d32",marginBottom:12}}>
-            성공하셨습니다
-          </div>
-          <p className="mini-result-desc" style={{fontSize:14,lineHeight:1.9,color:"#2c1a0e",whiteSpace:"pre-line"}}>
+        <div className="mini-result-card" style={{position:"relative",zIndex:2,background:"rgba(245,234,214,0.92)",borderRadius:8,padding:"40px 60px",textAlign:"center",width:"80vw",maxWidth:700}}>
+  <div className="mini-result-title" style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:700,color:"#2c1a0e",marginBottom:20}}>
+    성공하셨습니다
+  </div>
+  <p className="mini-result-desc" style={{fontSize:"clamp(15px,2vw,22px)",lineHeight:2,color:"#2c1a0e",whiteSpace:"pre-line"}}>
             {`비밀리에 사병 모집에 성공했습니다.\n\n모집된 사병은 훗날 복위 계획을 실행할 때\n당신에게 큰 힘이 되어줄 것입니다.\n\n현재 총 ${currentSoldiers + resultCount}명의 사병이 준비되어 있습니다.`}
           </p>
         </div>
@@ -3377,15 +3377,17 @@ function EndingScreen({ endingKey, onRestart }) {
           padding:"20px 0"}}>
 
           {/* 두루마리 */}
-          <div style={{position:"relative",width:"min(95vw,1000px)",display:"flex",
+          <div style={{position:"relative",width:"min(80vw,1000px)",display:"flex",
             flexDirection:"column",alignItems:"center"}}>
             {IMAGES.scrollBg
               ? <div style={{position:"relative",width:"100%"}}>
-                  {/* 배경: 텍스트 높이에 맞게 늘어나도록 background-image로 */}
+                  <img src={IMAGES.scrollBg} alt="두루마리"
+                    style={{position:"absolute",top:"50%",left:"50%",
+                      transform:"translate(-50%,-50%)",
+                      width:"140%",height:"140%",
+                      objectFit:"fill",zIndex:0,pointerEvents:"none"}}/>
                   <div style={{
-                    backgroundImage:`url(${IMAGES.scrollBg})`,
-                    backgroundSize:"100% 100%",
-                    backgroundRepeat:"no-repeat",
+                    position:"relative",zIndex:1,
                     width:"100%",
                     padding:"18% 20% 18%",
                     boxSizing:"border-box",
